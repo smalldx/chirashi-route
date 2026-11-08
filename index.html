@@ -88,7 +88,7 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;min-height:32px}
 <main>
   <button class="cond" id="condBtn"><span id="condTxt"></span><span>›</span></button>
   <div class="summary">
-    <div><b id="sCount">0</b><span>件(残り)</span></div>
+    <div><b id="sCount">0</b><span>件(今回)</span></div>
     <div><b id="sKm">0</b><span>km(目安)</span></div>
     <div><b id="sMin">0</b><span>分(移動のみ)</span></div>
   </div>
@@ -120,6 +120,9 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;min-height:32px}
     <h2>範囲と移動手段</h2>
     <label class="f">出発地点からの距離</label>
     <div class="seg5" id="radiusSeg"><button data-v="0.8">800m</button><button data-v="1.5">1.5km</button><button data-v="3">3km</button><button data-v="6">6km</button><button data-v="99">無制限</button></div>
+    <label class="f">今回配る件数</label>
+    <div class="seg5" id="limitSeg"><button data-v="5">5件</button><button data-v="10">10件</button><button data-v="20">20件</button><button data-v="30">30件</button><button data-v="all">全部</button></div>
+    <p class="muted" style="margin:4px 0 0">出発地点から近い順に選んで、回る順番を組みます。</p>
     <label class="f">移動手段</label>
     <div class="seg" id="modeSeg"><button data-v="walking">徒歩</button><button data-v="bicycling">自転車</button><button data-v="driving">車</button></div>
     <label class="toggle"><input type="checkbox" id="skipDone">配布済みはルートから外す</label>
@@ -264,7 +267,7 @@ const PRESETS = [
 
 /* ---------- storage ---------- */
 const KEY="flyerRoute.v1";
-let store={done:{},memo:{},cats:Object.keys(CATS),start:null,addr:"",radius:"1.5",mode:"walking",skipDone:true};
+let store={done:{},memo:{},cats:Object.keys(CATS),start:null,addr:"",radius:"1.5",mode:"walking",skipDone:true,limit:"all"};
 try{ const s=JSON.parse(localStorage.getItem(KEY)||"null"); if(s) store=Object.assign(store,s);}catch(e){}
 function save(){ try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){} }
 
@@ -357,6 +360,7 @@ function seg(id,key,after){const box=$(id);const sync=()=>box.querySelectorAll("
   box.querySelectorAll("button").forEach(b=>b.onclick=()=>{store[key]=b.dataset.v;save();sync();after();});sync();}
 seg("radiusSeg","radius",()=>render(true));
 seg("modeSeg","mode",()=>renderRoute());
+seg("limitSeg","limit",()=>render(true));
 $("skipDone").checked=store.skipDone;$("skipDone").onchange=e=>{store.skipDone=e.target.checked;save();render();};
 
 const NEAR=["税理士","会計事務所","社会保険労務士","行政書士","司法書士","土地家屋調査士","不動産会社","保険代理店","工務店","建設会社","介護事業所","歯科医院","クリニック","法律事務所","設計事務所","運送会社","卸売","人材派遣","広告代理店","自動車整備"];
@@ -368,7 +372,10 @@ let route=[],visible=[];
 function compute(){
   const r=parseFloat(store.radius);
   visible=PLACES.filter(p=>store.cats.includes(p.cat)&&km(start,p)<=r);
-  route=optimize(start,visible.filter(p=>!(store.skipDone&&store.done[p.id])));
+  let cand=visible.filter(p=>!(store.skipDone&&store.done[p.id]));
+  const lim=store.limit==="all"?Infinity:parseInt(store.limit,10);
+  if(cand.length>lim) cand=cand.slice().sort((a,b)=>km(start,a)-km(start,b)).slice(0,lim);
+  route=optimize(start,cand);
 }
 const SPEED={walking:4.5,bicycling:12,driving:22},ROAD=1.3,CH=9;
 function renderRoute(){
@@ -387,7 +394,7 @@ function renderRoute(){
   }
   const radTxt={"0.8":"800m","1.5":"1.5km","3":"3km","6":"6km","99":"無制限"}[store.radius];
   const modeTxt={walking:"徒歩",bicycling:"自転車",driving:"車"}[mode];
-  $("condTxt").innerHTML=`出発 <b>${esc(start.name)}</b>・業種 <b>${store.cats.length}</b>・<b>${radTxt}</b>・<b>${modeTxt}</b>`;
+  $("condTxt").innerHTML=`出発 <b>${esc(start.name)}</b>・業種 <b>${store.cats.length}</b>・<b>${radTxt}</b>${store.limit==="all"?"":`・<b>${store.limit}件</b>`}・<b>${modeTxt}</b>`;
   $("legNote").textContent=!route.length?(visible.length?"選んだ範囲はすべて配布済みです。":"条件に当てはまる配布先がありません。業種か距離を広げてください。")
     :(route.length>CH?"配布済みにチェックすると、ボタンが次の未配布へ進みます。":"")+(fromHere?" 現在地から案内します。":"");
   const ol=$("stops");ol.innerHTML="";ol.style.display=visible.length?"":"none";
@@ -395,7 +402,7 @@ function renderRoute(){
   [...route.map((p,k)=>({p,k:k+1})),...rest.map(p=>({p,k:null}))].forEach(({p,k})=>{
     const c=CATS[p.cat],done=!!store.done[p.id],memo=store.memo[p.id]||"",tel=p.tel.replace(/[^0-9]/g,"");
     const li=document.createElement("li");li.id="li-"+p.id;if(done)li.classList.add("done");
-    li.innerHTML=`<div class="num" style="background:${k?c.color:'#9a9890'}">${k||"済"}</div>
+    li.innerHTML=`<div class="num" style="background:${k?c.color:'#9a9890'}">${k||(done?"済":"–")}</div>
       <div><div class="nm">${esc(p.name)}</div>
       <div class="meta">${c.label}・${km(start,p).toFixed(1)}km${done?`・配布 ${store.done[p.id]}`:""}</div>
       <div class="meta">${esc(p.addr)}</div>
@@ -425,7 +432,7 @@ const layer=L.layerGroup().addTo(map);
 function drawMap(){
   layer.clearLayers();
   if(route.length)L.polyline([start,...route].map(p=>[p.lat,p.lng]),{color:"#1d1d1b",weight:3,opacity:.5,dashArray:"6 6"}).addTo(layer);
-  visible.filter(p=>!route.includes(p)).forEach(p=>addPin(p,"済",true));
+  visible.filter(p=>!route.includes(p)).forEach(p=>addPin(p,store.done[p.id]?"済":"–",true));
   route.forEach((p,i)=>addPin(p,i+1,false));
   L.marker([start.lat,start.lng],{icon:L.divIcon({className:"",html:'<div class="pin start">出</div>',iconSize:[32,32],iconAnchor:[16,16]}),zIndexOffset:1000}).addTo(layer);
 }
