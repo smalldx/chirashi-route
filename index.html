@@ -31,19 +31,26 @@ button{font:inherit;color:inherit;cursor:pointer}
 .tabs button.on{color:var(--accent);font-weight:700}
 .tabs .badge{position:absolute;top:7px;left:calc(50% + 8px);background:var(--ok);color:#fff;font-size:10px;font-weight:700;border-radius:999px;padding:1px 6px;min-width:18px}
 /* route view */
-.cond{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
-.cond button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:13px;min-height:34px}
-.cond button b{font-weight:700}
+.cond{display:flex;gap:6px;margin:0 -14px 10px;padding:0 14px;overflow-x:auto;scrollbar-width:none}
+.cond::-webkit-scrollbar{display:none}
+.cond button{flex:none;white-space:nowrap;max-width:150px;overflow:hidden;text-overflow:ellipsis;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:13px;min-height:38px}
+.cond button.on{border-color:var(--accent);color:var(--accent);font-weight:700}
+.condpanel{margin-bottom:10px}
+.nextlabel{font-size:12px;font-weight:800;color:var(--accent);margin:0 0 6px}
+#nextBox .item{border:none;padding:0;grid-template-columns:30px 1fr;margin-bottom:10px}
+#nextBox .item:not(.flash){background:transparent}
+#nextBox .foot{grid-column:1/-1;grid-row:2}
+#nextBox .donebtn{grid-column:1/-1;grid-row:3;width:100%;height:54px;border:none;border-radius:14px;flex-direction:row;gap:6px;font-size:16px;font-weight:800;background:var(--ok);color:var(--card)}
 .hero{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
 .stats{display:flex;align-items:baseline;gap:18px;margin-bottom:12px}
 .stats div{display:flex;align-items:baseline;gap:3px}
-.stats b{font-size:28px;font-weight:800;line-height:1}
+.stats b{font-size:22px;font-weight:800;line-height:1}
 .stats span{font-size:12px;color:var(--sub)}
 .navbtn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px;border-radius:14px;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:800;font-size:17px}
 .navbtn.off{background:var(--line);color:var(--sub);pointer-events:none}
 .note{font-size:12px;color:var(--sub);margin:8px 2px 0}
 .mapwrap{position:relative;border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:16px}
-#map{width:100%;height:42vh;min-height:260px;max-height:420px;background:var(--line)}
+#map{width:100%;height:30vh;min-height:220px;max-height:320px;background:var(--line)}
 .maphere{position:absolute;right:10px;bottom:22px;z-index:500;box-shadow:0 2px 6px rgba(0,0,0,.18)}
 .pin{width:28px;height:28px;border-radius:50%;color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.35)}
 .pin.small{width:16px;height:16px;font-size:0;border-width:2px;opacity:.55}
@@ -88,9 +95,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .nm{font-weight:700;font-size:15px;line-height:1.35}
 .meta{font-size:12px;color:var(--sub);margin-top:2px}
 .memotxt{font-size:12px;margin-top:6px;background:var(--bg);border-radius:8px;padding:4px 8px}
-.foot{grid-column:2/-1;margin-top:-2px}
-.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.acts a,.acts button{font-size:12px;min-height:34px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--bg);text-decoration:none;display:inline-flex;align-items:center;gap:3px}
+.foot{grid-column:1/-1;margin-top:-2px}
+.acts{display:flex;gap:5px;margin-top:8px}
+.acts a,.acts button{flex:1 1 0;min-width:0;font-size:11px;line-height:1.2;min-height:48px;padding:4px 0;border-radius:10px;border:1px solid var(--line);background:var(--bg);text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;white-space:nowrap}
+.acts span{font-size:16px;line-height:1.2}
 .memo{margin-top:8px;width:100%;padding:9px 10px;font-size:16px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);display:none}
 .memo.show{display:block}
 .donebtn{width:58px;height:58px;border-radius:50%;border:2px solid var(--ok);background:var(--card);color:var(--ok);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;font-weight:700;line-height:1.1}
@@ -108,9 +116,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 .ditem{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:center;margin-bottom:6px}
 .ditem .dot{width:10px;height:10px;border-radius:50%}
 .ditem .nm{font-size:14px}
+.ditem .memo{grid-column:1/-1;margin-top:0}
+.dbtns{display:flex;gap:5px}
 .undo{font-size:12px;border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 10px;min-height:34px}
 /* settings */
-.sec{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;scroll-margin-top:76px}
 .sec h2{font-size:14px;margin:0 0 10px;font-weight:800}
 label.f{display:block;font-size:12px;color:var(--sub);margin:12px 0 6px;font-weight:600}
 input[type=text],textarea,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;font-size:16px}
@@ -134,9 +144,10 @@ textarea{min-height:80px;font-size:13px}
 #pickBanner{display:none;position:sticky;top:calc(61px + var(--safe-t));z-index:999;background:var(--warn);color:#fff;padding:10px 14px;font-size:14px;align-items:center;justify-content:space-between;gap:8px}
 #pickBanner.show{display:flex}
 #pickBanner button{min-height:34px;padding:4px 12px;background:#fff;color:#000;border:none;border-radius:8px}
-.toast{position:fixed;left:50%;bottom:calc(var(--tabh) + var(--safe-b) + 14px);transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;opacity:0;transition:all .2s;pointer-events:none;z-index:3000;display:flex;gap:12px;align-items:center;white-space:nowrap}
+.toast{position:fixed;left:50%;bottom:calc(var(--tabh) + var(--safe-b) + 14px);transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;opacity:0;transition:all .2s;pointer-events:none;z-index:3000;display:flex;gap:12px;align-items:center;white-space:nowrap;max-width:calc(100vw - 20px)}
 .toast.show{opacity:1;pointer-events:auto;transform:translateX(-50%)}
-.toast button{border:none;background:none;color:#7cc0ee;font-weight:800;font-size:14px;padding:4px}
+#toastMsg{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.toast button{flex:none;border:none;background:none;color:#7cc0ee;font-weight:800;font-size:14px;padding:4px}
 @media (prefers-color-scheme: dark){.toast button{color:#0d4a75}}
 details summary{cursor:pointer;color:var(--sub);font-size:13px;min-height:32px}
 </style>
@@ -148,12 +159,14 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;min-height:32px}
 <!-- ===== ルート ===== -->
 <section class="view on" id="vRoute">
   <div class="cond" id="cond"></div>
+  <div class="condpanel" id="condPanel" style="display:none"></div>
   <div class="hero">
     <div class="stats">
       <div><b id="sCount">0</b><span>件</span></div>
       <div><b id="sKm">0</b><span>km</span></div>
       <div><b id="sMin">0</b><span>分 移動</span></div>
     </div>
+    <div id="nextBox"></div>
     <a class="navbtn" id="navBtn" target="_blank" rel="noopener">▶ ナビ開始</a>
     <p class="note" id="note"></p>
   </div>
@@ -474,9 +487,16 @@ Object.entries(CATS).forEach(([k,c])=>{
 });
 $("allOn").onclick=()=>{catsEl.querySelectorAll("input").forEach(x=>x.checked=true);store.cats=Object.keys(CATS);save();render(true);};
 $("allOff").onclick=()=>{catsEl.querySelectorAll("input").forEach(x=>x.checked=false);store.cats=[];save();render(true);};
-function seg(id,key,after){const box=$(id);const sync=()=>box.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.v===store[key]));
-  box.querySelectorAll("button").forEach(b=>b.onclick=()=>{store[key]=b.dataset.v;save();sync();after();});sync();}
-seg("radiusSeg","radius",()=>render(true));seg("modeSeg","mode",()=>render());seg("limitSeg","limit",()=>render(true));
+// ルート画面の条件チップから開く、設定と同じ選択肢
+let condOpen=null;
+[["limitSeg","limitQ"],["radiusSeg","radiusQ"],["modeSeg","modeQ"]].forEach(([from,id])=>{const c=$(from).cloneNode(true);c.id=id;c.style.display="none";$("condPanel").appendChild(c);});
+function syncCond(){Object.entries({limit:"limitQ",radius:"radiusQ",mode:"modeQ"}).forEach(([k,id])=>$(id).style.display=condOpen===k?"grid":"none");$("condPanel").style.display=condOpen?"":"none";}
+function condTap(k){
+  if(k==="start"||k==="cats"){condOpen=null;syncCond();renderRoute();show("vSet");if(k==="cats")$("cats").closest(".sec").scrollIntoView();return;}
+  condOpen=condOpen===k?null:k;syncCond();renderRoute();}
+function seg(ids,key,after){const boxes=ids.map(id=>$(id));const sync=()=>boxes.forEach(box=>box.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.v===store[key])));
+  boxes.forEach(box=>box.querySelectorAll("button").forEach(b=>b.onclick=()=>{store[key]=b.dataset.v;save();sync();condOpen=null;syncCond();after();}));sync();}
+seg(["radiusSeg","radiusQ"],"radius",()=>render(true));seg(["modeSeg","modeQ"],"mode",()=>render());seg(["limitSeg","limitQ"],"limit",()=>render(true));
 ["税理士","会計事務所","社会保険労務士","行政書士","司法書士","土地家屋調査士","不動産会社","保険代理店","工務店","建設会社","介護事業所","歯科医院","クリニック","法律事務所","設計事務所","運送会社","卸売","人材派遣","広告代理店","自動車整備"].forEach(w=>{
   const a=document.createElement("a");a.target="_blank";a.rel="noopener";a.textContent="近くの"+w;a.href="https://www.google.com/maps/search/"+encodeURIComponent(w);$("near").appendChild(a);});
 
@@ -505,14 +525,22 @@ function compute(){
 const SPEED={walking:4.5,bicycling:12,driving:22},ROAD=1.3,CH=9;
 const RAD={"0.8":"800m","1.5":"1.5km","3":"3km","6":"6km","99":"距離無制限"};
 const MODE={walking:"🚶 徒歩",bicycling:"🚲 自転車",driving:"🚗 車"};
+function bindMemo(el,p){
+  const mi=el.querySelector(".memo"),t=el.querySelector(".memotxt");
+  el.querySelector(".mb").onclick=()=>{mi.classList.toggle("show");if(mi.classList.contains("show"))mi.focus();};
+  mi.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();mi.blur();}};
+  // 作り直すと「配布した」のタップが消えるので、メモの表示だけ更新する
+  mi.onchange=()=>{const v=mi.value.trim();if(v)store.memo[p.id]=v;else delete store.memo[p.id];save();
+    t.textContent="📝 "+v;t.style.display=v?"":"none";mi.classList.remove("show");toast("メモを保存しました");};
+}
 function markDone(p){store.done[p.id]=today();save();render();
   toast(`「${p.name.slice(0,12)}${p.name.length>12?"…":""}」を配布済みに`,"元に戻す",()=>{delete store.done[p.id];save();render();});}
 function move(i,d){const ids=route.map(p=>p.id);const j=i+d;if(j<0||j>=ids.length)return;[ids[i],ids[j]]=[ids[j],ids[i]];store.manual=ids;save();render();}
 function renderRoute(){
   const mode=store.mode;
   const cond=$("cond");cond.innerHTML="";
-  [["📍 "+start.name],[store.limit==="all"?"件数:全部":`件数:${store.limit}件`],[RAD[store.radius]],[MODE[mode]],[`業種 ${store.cats.length}/${Object.keys(CATS).length}`]].forEach(([t])=>{
-    const b=document.createElement("button");b.textContent=t;b.onclick=()=>show("vSet");cond.appendChild(b);});
+  [["📍 "+start.name,"start"],[store.limit==="all"?"件数:全部":`件数:${store.limit}件`,"limit"],[RAD[store.radius],"radius"],[MODE[mode],"mode"],[`業種 ${store.cats.length}/${Object.keys(CATS).length}`,"cats"]].forEach(([t,k])=>{
+    const b=document.createElement("button");b.textContent=t;b.classList.toggle("on",condOpen===k);b.onclick=()=>condTap(k);cond.appendChild(b);});
   const dist=pathLen([start,...route])*ROAD;
   $("sCount").textContent=route.length;$("sKm").textContent=dist.toFixed(1);$("sMin").textContent=Math.round(dist/SPEED[mode]*60);
   const nb=$("navBtn");
@@ -527,7 +555,9 @@ function renderRoute(){
     :(route.length>CH?"「配布した」を押すと、ナビが次の未配布へ進みます。":"")+(fromHere?" 現在地から案内します。":"");
   $("listInfo").textContent=route.length?`${route.length}件`:"";
   const box=$("stops");box.innerHTML="";
+  const next=$("nextBox");next.innerHTML=route.length&&!sorting?'<div class="nextlabel">次はここ</div>':"";
   if(!route.length){box.innerHTML='<div class="empty">今回のルートはありません</div>';}
+  else if(route.length===1&&!sorting){box.innerHTML='<div class="empty">このあとの配布先はありません</div>';}
   route.forEach((p,i)=>{
     const c=CATS[p.cat],memo=store.memo[p.id]||"",tel=(p.tel||"").replace(/[^0-9]/g,"");
     const el=document.createElement("div");el.id="it-"+p.id;
@@ -542,25 +572,23 @@ function renderRoute(){
     el.className="item";
     el.innerHTML=`<div class="num" style="background:${c.color}">${i+1}</div>
       <div><div class="nm">${esc(p.name)}${tags}</div>
-      <div class="meta">${c.label}・${km(start,p).toFixed(1)}km</div>
+      <div class="meta">${c.label}${i?`・前の先から${km(route[i-1],p).toFixed(1)}km`:""}</div>
       <div class="meta">${esc(p.addr||"")}</div>
 </div>
       <button class="donebtn" aria-label="配布した"><span class="ck">✓</span>配布した</button>
-      <div class="foot">${memo?`<div class="memotxt">📝 ${esc(memo)}</div>`:""}
+      <div class="foot"><div class="memotxt"${memo?"":' style="display:none"'}>📝 ${esc(memo)}</div>
       <div class="acts">
-        <a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${ll(p)}&travelmode=${mode}">🧭 ナビ</a>
-        ${tel?`<a href="tel:${tel}">📞 電話</a>`:""}
-        <a target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(p.name+" 岐阜")}">🔎 HP</a>
-        <button class="mb">📝 メモ</button>
-        <button class="sk">⏭ スキップ</button>
+        <a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${ll(p)}&travelmode=${mode}"><span>🧭</span>ナビ</a>
+        ${tel?`<a href="tel:${tel}"><span>📞</span>電話</a>`:""}
+        <a target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(p.name+" 岐阜")}"><span>🔎</span>HP</a>
+        <button class="mb"><span>📝</span>メモ</button>
+        <button class="sk"><span>⏭</span>スキップ</button>
       </div>
       <input class="memo" placeholder="例:受付に手渡し、不在など" value="${esc(memo)}"></div>`;
     el.querySelector(".donebtn").onclick=()=>markDone(p);
     el.querySelector(".sk").onclick=()=>{store.skip[p.id]=today();save();render();toast("今日はスキップしました","元に戻す",()=>{delete store.skip[p.id];save();render();});};
-    const mi=el.querySelector(".memo");
-    el.querySelector(".mb").onclick=()=>{mi.classList.toggle("show");if(mi.classList.contains("show"))mi.focus();};
-    mi.onchange=e=>{store.memo[p.id]=e.target.value;save();renderRoute();toast("メモを保存しました");};
-    box.appendChild(el);
+    bindMemo(el,p);
+    (i===0?next:box).appendChild(el);
   });
   if(sortable){sortable.destroy();sortable=null;}
   $("sortHint").style.display=sorting?"":"none";
@@ -600,9 +628,11 @@ function renderDone(){
       const c=CATS[p.cat],memo=store.memo[p.id]||"",tel=(p.tel||"").replace(/[^0-9]/g,"");
       const it=document.createElement("div");it.className="ditem";
       it.innerHTML=`<span class="dot" style="background:${c.color}"></span>
-        <div><div class="nm">${esc(p.name)}</div><div class="meta">${c.label}${p.tel?`・<a href="tel:${tel}">${p.tel}</a>`:""}</div>${memo?`<div class="memotxt">📝 ${esc(memo)}</div>`:""}</div>
-        <button class="undo">戻す</button>`;
-      it.querySelector(".undo").onclick=()=>{delete store.done[p.id];save();render();renderDone();toast("未配布に戻しました","取り消し",()=>{store.done[p.id]=d;save();render();renderDone();});};
+        <div><div class="nm">${esc(p.name)}</div><div class="meta">${c.label}${p.tel?`・<a href="tel:${tel}">${p.tel}</a>`:""}</div><div class="memotxt"${memo?"":' style="display:none"'}>📝 ${esc(memo)}</div></div>
+        <div class="dbtns"><button class="undo mb">📝</button><button class="undo ud">戻す</button></div>
+        <input class="memo" placeholder="例:受付に手渡し、不在など" value="${esc(memo)}">`;
+      bindMemo(it,p);
+      it.querySelector(".ud").onclick=()=>{delete store.done[p.id];save();render();renderDone();toast("未配布に戻しました","取り消し",()=>{store.done[p.id]=d;save();render();renderDone();});};
       g.appendChild(it);
     });
     box.appendChild(g);
@@ -664,10 +694,12 @@ function fit(){map.invalidateSize();const pts=[start,...(route.length?route:visi
   if(pts.length>1)map.fitBounds(pts,{padding:[30,30],maxZoom:17});else map.setView(pts[0],16);}
 
 /* ---------- records ---------- */
-$("exportBtn").onclick=async()=>{const txt=JSON.stringify({done:store.done,memo:store.memo});const io=$("io");io.style.display="block";io.value=txt;
+$("exportBtn").onclick=async()=>{const txt=JSON.stringify({done:store.done,memo:store.memo,custom:store.custom});const io=$("io");io.style.display="block";io.value=txt;
   try{await navigator.clipboard.writeText(txt);toast("記録をコピーしました");}catch(e){io.select();toast("下の文字を長押しでコピーしてください");}};
 $("importBtn").onclick=()=>{const io=$("io");if(io.style.display==="none"||!io.value.trim()){io.style.display="block";io.value="";io.focus();toast("記録を貼り付けて、もう一度押してください");return;}
   try{const d=JSON.parse(io.value);store.done=d.done||{};store.memo=d.memo||{};
+    // 旧形式の記録には custom がない。ある場合だけ、未登録の事業所を足す
+    if(Array.isArray(d.custom)){const have=new Set(store.custom.map(x=>x.id));d.custom.forEach(x=>{if(x&&x.id&&CATS[x.cat]&&typeof x.lat==="number"&&typeof x.lng==="number"&&!have.has(x.id))store.custom.push(x);});}
     Object.keys(store.done).forEach(k=>{const m=/^(\d+)\/(\d+)$/.exec(store.done[k]);if(m)store.done[k]=`${new Date().getFullYear()}-${pad(m[1])}-${pad(m[2])}`;});
     save();render();renderDone();toast("記録を読み込みました");io.style.display="none";}catch(e){toast("読み込めませんでした");}};
 let resetArm=false;
