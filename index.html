@@ -13,7 +13,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
 <style>
 :root{--bg:#f6f5f1;--card:#ffffff;--ink:#1d1d1b;--sub:#6b6a66;--line:#e6e4dd;--accent:#1f5f8b;--accent-soft:#e3eef6;--accent-ink:#ffffff;--ok:#2e7d4f;--ok-soft:#e4f2e9;--warn:#b5541c;
-  --safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);--tabh:62px}
+  --safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);--tabh:52px}
 @media (prefers-color-scheme: dark){:root{--bg:#141413;--card:#1f1f1d;--ink:#ecebe6;--sub:#a3a29c;--line:#33322e;--accent:#6fb0dc;--accent-soft:#1c2c38;--accent-ink:#0d1b24;--ok:#6cc08f;--ok-soft:#1b2b21;--warn:#e08a55;}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;font-size:16px;line-height:1.5}
@@ -26,10 +26,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .view.on{display:block}
 /* tab bar */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:1500;display:grid;grid-template-columns:repeat(3,1fr);background:var(--card);border-top:1px solid var(--line);padding-bottom:var(--safe-b)}
-.tabs button{border:none;background:none;height:var(--tabh);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;color:var(--sub);position:relative}
-.tabs button .ic{font-size:21px;line-height:1}
+.tabs button{border:none;background:none;height:var(--tabh);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;color:var(--sub);position:relative}
+
 .tabs button.on{color:var(--accent);font-weight:700}
-.tabs .badge{position:absolute;top:7px;left:calc(50% + 8px);background:var(--ok);color:#fff;font-size:10px;font-weight:700;border-radius:999px;padding:1px 6px;min-width:18px}
+.tabs .badge{position:absolute;top:50%;transform:translateY(-50%);left:calc(50% + 33px);background:var(--ok);color:#fff;font-size:10px;font-weight:700;border-radius:999px;padding:1px 6px;min-width:18px}
 /* route view */
 .cond{display:flex;gap:6px;margin:0 -14px 10px;padding:0 14px;overflow-x:auto;scrollbar-width:none}
 .cond::-webkit-scrollbar{display:none}
@@ -67,7 +67,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .manual.show{display:flex}
 .manual button{border:none;background:var(--card);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700;min-height:32px}
 .item.compact{grid-template-columns:30px 1fr auto;align-items:center;padding:8px 10px}
-.handle{width:48px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--sub);touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.handle{width:48px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--sub);touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
 .drag-ghost{opacity:.35}
 .drag-chosen{box-shadow:0 8px 20px rgba(0,0,0,.18);transform:scale(1.02)}
 .sorthint{font-size:12px;color:var(--sub);margin:0 2px 8px}
@@ -97,12 +97,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .memotxt{font-size:12px;margin-top:6px;background:var(--bg);border-radius:8px;padding:4px 8px}
 .foot{grid-column:1/-1;margin-top:-2px}
 .acts{display:flex;gap:5px;margin-top:8px}
-.acts a,.acts button{flex:1 1 0;min-width:0;font-size:11px;line-height:1.2;min-height:48px;padding:4px 0;border-radius:10px;border:1px solid var(--line);background:var(--bg);text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;white-space:nowrap}
-.acts span{font-size:16px;line-height:1.2}
+.acts a,.acts button{flex:1 1 0;min-width:0;font-size:12px;line-height:1.2;min-height:40px;padding:4px 0;border-radius:10px;border:1px solid var(--line);background:var(--bg);text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;white-space:nowrap}
+
 .memo{margin-top:8px;width:100%;padding:9px 10px;font-size:16px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);display:none}
 .memo.show{display:block}
-.donebtn{width:58px;height:58px;border-radius:50%;border:2px solid var(--ok);background:var(--card);color:var(--ok);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;font-weight:700;line-height:1.1}
-.donebtn .ck{font-size:20px}
+.donebtn{width:68px;height:44px;border-radius:10px;border:2px solid var(--ok);background:var(--card);color:var(--ok);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;font-weight:700;line-height:1.1}
+
 .donebtn:active{background:var(--ok-soft)}
 .more{font-size:12px;color:var(--sub);text-align:center;margin:12px 0 0}
 .empty{background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:22px 16px;text-align:center;color:var(--sub);font-size:14px}
@@ -153,7 +153,7 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;min-height:32px}
 </style>
 </head>
 <body>
-<div class="top"><h1 id="title">配布ルート</h1><button class="pill" id="hereTop">📍 現在地から</button></div>
+<div class="top"><h1 id="title">配布ルート</h1><button class="pill" id="hereTop">現在地から</button></div>
 <div id="pickBanner"><span>地図をタップして出発地点を選んでください</span><button id="pickCancel">やめる</button></div>
 
 <!-- ===== ルート ===== -->
@@ -167,12 +167,12 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;min-height:32px}
       <div><b id="sMin">0</b><span>分 移動</span></div>
     </div>
     <div id="nextBox"></div>
-    <a class="navbtn" id="navBtn" target="_blank" rel="noopener">▶ ナビ開始</a>
+    <a class="navbtn" id="navBtn" target="_blank" rel="noopener">ナビ開始</a>
     <p class="note" id="note"></p>
   </div>
   <div class="mapwrap"><div id="map"></div></div>
-  <div class="sechead"><h2>回る順番<span id="listInfo"></span></h2><div class="hbtns"><button class="pill sm" id="sortBtn">↕ 並べ替え</button><button class="pill sm" id="addBtn">＋ 追加</button></div></div>
-  <p class="sorthint" id="sortHint" style="display:none">右の ≡ をつかんで上下にドラッグすると順番を入れ替えられます。</p>
+  <div class="sechead"><h2>回る順番<span id="listInfo"></span></h2><div class="hbtns"><button class="pill sm" id="sortBtn">並べ替え</button><button class="pill sm" id="addBtn">追加</button></div></div>
+  <p class="sorthint" id="sortHint" style="display:none">右の「移動」をつかんで上下にドラッグすると順番を入れ替えられます。</p>
   <div class="manual" id="manualNote"><span>手動で並べた順番です</span><button id="autoBtn">自動の順番に戻す</button></div>
   <div class="list" id="stops"></div>
   <p class="more" id="more"></p>
@@ -200,7 +200,7 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;min-height:32px}
 <section class="view" id="vSet">
   <div class="sec">
     <h2>出発地点</h2>
-    <button class="btn primary" id="hereBtn" style="width:100%">📍 現在地を使う</button>
+    <button class="btn primary" id="hereBtn" style="width:100%">現在地を使う</button>
     <label class="f" for="addr">住所で探す</label>
     <div class="row"><input type="text" id="addr" placeholder="例:岐阜市長住町2丁目" autocomplete="street-address" style="flex:3"><button class="btn" id="addrGo" style="flex:1">検索</button></div>
     <div class="results" id="addrRes"></div>
@@ -216,7 +216,7 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;min-height:32px}
     <label class="f">出発地点からの距離</label>
     <div class="seg" id="radiusSeg" style="grid-template-columns:repeat(5,1fr)"><button data-v="0.8">800m</button><button data-v="1.5">1.5km</button><button data-v="3">3km</button><button data-v="6">6km</button><button data-v="99">無制限</button></div>
     <label class="f">移動手段</label>
-    <div class="seg" id="modeSeg" style="grid-template-columns:repeat(3,1fr)"><button data-v="walking">🚶 徒歩</button><button data-v="bicycling">🚲 自転車</button><button data-v="driving">🚗 車</button></div>
+    <div class="seg" id="modeSeg" style="grid-template-columns:repeat(3,1fr)"><button data-v="walking">徒歩</button><button data-v="bicycling">自転車</button><button data-v="driving">車</button></div>
   </div>
   <div class="sec">
     <h2>業種</h2>
@@ -229,7 +229,7 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;min-height:32px}
     <div class="near" id="near"></div>
   </div>
   <details style="padding:0 4px"><summary>データについて</summary>
-    <p class="muted">掲載先は2026年11月時点のGoogleマップの情報をもとにしています。住所はGoogleの表記で、一部ローマ字が残っています。(要確認)の付いた所は現地の看板で正式名を確認してください。全国チェーンの店舗や大手の支店は外しています。地図・住所検索:国土地理院。</p>
+    <p class="muted">掲載先は2026年11月時点の公開情報をもとにしています。追加15業種の30件は公式サイト・自治体・業界団体の情報とGoogleマップの店舗位置を照合しました。既存データは一部ローマ字が残っています。(要確認)の付いた所は現地の看板で正式名を確認してください。営業状況・受付可否は訪問時に確認してください。全国チェーンの店舗や大手の支店は外しています。地図・住所検索:国土地理院。</p>
   </details>
 </section>
 
@@ -248,7 +248,7 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;min-height:32px}
         <label class="f" for="nCat">業種</label><select id="nCat"></select>
         <label class="f" for="nTel">電話(なくても可)</label><input type="text" id="nTel" inputmode="tel" placeholder="058-000-0000">
         <label class="f">場所</label>
-        <div class="row"><button class="btn" id="nHere">📍 現在地</button><button class="btn" id="nPick">地図をタップ</button></div>
+        <div class="row"><button class="btn" id="nHere">現在地</button><button class="btn" id="nPick">地図をタップ</button></div>
         <p class="locline" id="nLoc">場所:まだ決まっていません</p>
         <label class="toggle" style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14px"><input type="checkbox" id="nDone" style="width:22px;height:22px">今ここで配った(配布済みにする)</label>
         <button class="btn primary" id="nSave" style="width:100%;margin-top:14px">登録する</button>
@@ -257,9 +257,9 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;min-height:32px}
   </div>
 </div>
 <nav class="tabs">
-  <button data-v="vRoute" class="on"><span class="ic">🗺️</span>ルート</button>
-  <button data-v="vDone"><span class="ic">✅</span>配布済み<span class="badge" id="tabBadge" style="display:none"></span></button>
-  <button data-v="vSet"><span class="ic">⚙️</span>設定</button>
+  <button data-v="vRoute" class="on">ルート</button>
+  <button data-v="vDone">配布済み<span class="badge" id="tabBadge" style="display:none"></span></button>
+  <button data-v="vSet">設定</button>
 </nav>
 <div class="toast" id="toast"><span id="toastMsg"></span><button id="toastAct" style="display:none"></button></div>
 
@@ -279,7 +279,22 @@ const CATS = {
   whole: {label:"卸売・製造", color:"#ad494a"},
   staff: {label:"人材派遣", color:"#637939"},
   ad:    {label:"広告・制作", color:"#ce6dbd"},
-  car:   {label:"自動車整備", color:"#8c6d31"}
+  car:   {label:"自動車整備", color:"#8c6d31"},
+  food:  {label:"飲食店・喫茶店", color:"#b85c38"},
+  retail:{label:"小売店・専門店", color:"#b04f70"},
+  beauty:{label:"美容室・理容室", color:"#a34e96"},
+  salon: {label:"エステ・ネイル", color:"#996699"},
+  health:{label:"整体・接骨・鍼灸", color:"#398579"},
+  pharma:{label:"調剤薬局", color:"#368b67"},
+  edu:   {label:"学習塾・習い事", color:"#5478b5"},
+  nursery:{label:"保育園・幼稚園", color:"#b17a2a"},
+  hotel: {label:"旅館・ホテル", color:"#7560a6"},
+  clean: {label:"清掃・クリーニング", color:"#36859b"},
+  repair:{label:"電気・水道・設備工事", color:"#9a713c"},
+  print: {label:"印刷・看板", color:"#956060"},
+  it:    {label:"IT・システム開発", color:"#4a6e98"},
+  pet:   {label:"動物病院・ペット", color:"#7a8744"},
+  other: {label:"その他の事業所", color:"#727580"}
 };
 const PLACES = [
  ["t1","tax","税理士法人服部会計事務所","2-22 Hatsuhimachi, 岐阜市","0120-864-459",35.447778,136.771296],
@@ -363,6 +378,160 @@ const PLACES = [
  ,["v3","car","小川自動車工場","岐阜市金宝町4-5","058-262-6920",35.414917,136.754291]
  ,["v4","car","Sakurai Auto Service(要確認)","1-17 Tōeichō, 岐阜市","058-259-7090",35.414634,136.773526]
  ,["v5","car","岐阜自動車センター","岐阜市清本町7-71","",35.404601,136.737989]
+ // 2026-11-08追加。確認元は DATA_SOURCES.md を参照。
+ ,["food1","food","茶房よし田","岐阜市白木町63","058-264-5083",35.4274846,136.7647814]
+ ,["food2","food","川原町屋","岐阜市玉井町28","058-266-5144",35.4369174,136.771491]
+ ,["retail1","retail","CONECOYA","岐阜市下奈良2丁目19-1","080-1839-9015",35.3914964,136.7115158]
+ ,["retail2","retail","GARAMP","岐阜市清住町1-21 レイワビル4F","050-3395-7383",35.4127857,136.7621135]
+ ,["beauty1","beauty","PREVIA GIFU","岐阜市橋本町1丁目10-1 アクティブG 3F","058-265-0261",35.4094174,136.7576154]
+ ,["beauty2","beauty","bemanuel（エマニエル）","岐阜市入舟町5丁目3","058-245-6888",35.4114355,136.7829598]
+ ,["salon1","salon","MAKE+NAIL vivid","岐阜市河渡3-23-4","058-252-3025",35.412066,136.700215]
+ ,["salon2","salon","nailsalon RICHE","岐阜市玉宮町2-1 LECLAIRビル2F中央店舗","050-3591-0712",35.4132732,136.7580566]
+ ,["health1","health","藤井接骨院","岐阜市佐久間町60","058-265-0029",35.426748,136.757565]
+ ,["health2","health","東栄接骨院","岐阜市東栄町2-6-2","058-247-0085",35.4149494,136.7757207]
+ ,["pharma1","pharma","有限会社杉山薬局","岐阜市鏡島西2丁目4-47","058-251-9001",35.4096313,136.7165086]
+ ,["pharma2","pharma","大学堂小川薬局","岐阜市七軒町15-5","058-266-4193",35.425781,136.762584]
+ ,["edu1","edu","高木塾","岐阜市長良1058-9","058-294-3052",35.446154,136.787728]
+ ,["edu2","edu","WiGo個別","岐阜市市橋3-12-16 メゾンNAWA2F","058-272-8787",35.4021072,136.7242711]
+ ,["nursery1","nursery","岐阜幼稚園","岐阜市西野町3丁目1","058-262-0683",35.4276096,136.7563625]
+ ,["nursery2","nursery","ほんごう幼稚園","岐阜市本郷町3丁目4","058-251-1488",35.4212132,136.7485716]
+ ,["hotel1","hotel","長良川温泉 石金","岐阜市長良112","058-231-8156",35.4407675,136.7746286]
+ ,["hotel2","hotel","鵜匠の家 すぎ山","岐阜市長良73-1","058-231-0161",35.4407481,136.7779312]
+ ,["clean1","clean","有限会社サンメンテ","岐阜市北一色3丁目4-5","058-213-5861",35.4128227,136.7860223]
+ ,["clean2","clean","有限会社Taiki","岐阜市茜部野瀬1丁目31-2","058-275-3567",35.3798577,136.7455446]
+ ,["repair1","repair","株式会社イズミ","岐阜市菅生6丁目9-17","058-233-8487",35.4264487,136.7277848]
+ ,["repair2","repair","株式会社川田電機工務店","岐阜市吹上町6丁目25","058-251-4978",35.4127276,136.7365464]
+ ,["print1","print","兼山印刷株式会社","岐阜市八ツ梅町3-24","058-263-1630",35.4230808,136.7524128]
+ ,["print2","print","株式会社コピンピア 本社","岐阜市六条南2丁目18-1","058-274-7703",35.3970717,136.7387209]
+ ,["it1","it","有限会社クリッククリック","岐阜市北一色3丁目2-5","058-248-5657",35.4134272,136.787528]
+ ,["it2","it","有限会社林コンピュータ","岐阜市東駒爪町25","050-3637-3003",35.415753,136.7639369]
+ ,["pet1","pet","ふく動物病院","岐阜市岩田東3-82","058-243-2955",35.43897,136.837131]
+ ,["pet2","pet","ながもり動物病院","岐阜市岩地3丁目9-1","058-249-5507",35.4047668,136.8083917]
+ ,["other1","other","二幸写真館","岐阜市日ノ出町1-13","058-262-2269",35.418698,136.7588518]
+ ,["other2","other","ミナトスタジオ","岐阜市加納本町4-3","058-271-3104",35.405903,136.757774]
+ // 岐南町(2026年11月 Googleマップより)
+ ,["t13","tax","税理士法人グッドパートナーズ会計事務所(GP会計)","岐南町下印食3-30 とらでんビル1階","058-275-7788",35.3889894,136.7708647]
+ ,["t14","tax","可児成章税理士事務所","岐南町八剣北4-111 奥田ビル4階","058-249-6888",35.3953951,136.7834468]
+ ,["t15","tax","伏屋啓一税理士事務所","岐南町下印食3-10 クリスタルパレス","058-275-7411",35.3898138,136.7699251]
+ ,["t16","tax","呉岡文二税理士事務所","岐南町平成1-3 5階","058-259-6500",35.3878557,136.7836187]
+ ,["t17","tax","長縄利男税理士事務所","岐南町八剣北2-140","058-246-3598",35.397405,136.7826507]
+ ,["t18","tax","兼山登 税理士事務所","岐南町三宅1-159-3","058-247-1058",35.3961993,136.7911719]
+ ,["t19","tax","北川公認会計士事務所","岐南町下印食2-119-2","058-276-4870",35.3902433,136.7695348]
+ ,["s6","sr","社会保険労務士法人ひまわり・行政書士法人ひまわり","岐南町八剣北4-111 奥田ビル7階","058-215-5077",35.3936511,136.7847914]
+ ,["s7","sr","もも行政書士事務所","岐南町八剣北4-111 奥田ビル3階","058-215-1919",35.3937081,136.7847832]
+ ,["s8","sr","JIBAI行政書士法人","岐南町上印食6-81","058-325-9612",35.3928162,136.7884904]
+ ,["s9","sr","行政書士熊田行雄事務所","岐南町徳田西1-164","058-274-8936",35.3862844,136.7683188]
+ ,["s10","sr","小俣行政書士事務所","岐南町八剣北4-111","058-240-5422",35.3937081,136.7847832]
+ ,["s11","sr","行政書士那波法務事務所","岐南町下印食2-16","058-273-8453",35.391358,136.770276]
+ ,["j9","judi","青木英俊司法書士事務所","岐南町徳田3-260-1","058-337-0717",35.383117,136.774637]
+ ,["j10","judi","司法書士法人 岡本事務所","岐南町八剣5-74-5","058-240-5525",35.3922805,136.7793394]
+ ,["j11","judi","高橋孝幸司法書士事務所","岐南町上印食3-37","058-201-5185",35.3966966,136.7888953]
+ ,["r3","re","ミタカ不動産株式会社 岐南本店","岐南町上印食8-123-1 フォーカスポーカス19番","058-246-4770",35.3889708,136.7877685]
+ ,["r4","re","(株)岐阜ながら不動産","岐南町八剣北1-5-2","058-240-0700",35.39893,136.7845192]
+ ,["r5","re","株式会社トライ不動産","岐南町上印食5-159 五十鈴ハイツNeo","058-215-5557",35.3943522,136.7855721]
+ ,["r6","re","ランドホーム","岐南町下印食2-11-2","058-227-0868",35.391347,136.770251]
+ ,["r7","re","サンブロス(株)","岐南町上印食8-78 フォルテ21","058-249-6081",35.390786,136.788813]
+ ,["r8","re","(株)ワークス不動産","岐南町上印食1-71","058-240-5512",35.397167,136.7897829]
+ ,["r9","re","(有)ディベロップメントブレーン","岐南町野中2-1","058-249-4181",35.3877042,136.7988946]
+ ,["r10","re","清渓不動産","岐南町伏屋5-33","058-248-9884",35.3823247,136.7894883]
+ ,["r11","re","五光不動産(株)","岐南町上印食8-15","058-245-1814",35.3899259,136.7898143]
+ ,["r12","re","株式会社フィールドパートナーズ","岐南町伏屋9-167","058-257-2545",35.3802891,136.7847179]
+ ,["r13","re","(株)ゼロ開発","岐南町徳田7-3","058-214-3010",35.3791235,136.7737653]
+ ,["r14","re","株式会社土手商事","岐南町若宮地2-233-1","058-201-0609",35.3784773,136.7957061]
+ ,["r15","re","株式会社ココエスタ","岐南町三宅6-5-1","058-213-5333",35.3901455,136.8000537]
+ ,["r16","re","岐南住宅開発","岐南町野中3-70","058-245-1876",35.3859068,136.8011024]
+ ,["r17","re","株式会社スムタック","岐南町上印食1-76 SOGOビル1階C","0120-259-677",35.3968507,136.7895347]
+ ,["r18","re","コーワ不動産","岐南町三宅5-46","058-247-7511",35.3929262,136.7910388]
+ ,["r19","re","(株)コンビック","岐南町八剣7-86-2","",35.3904926,136.7821099]
+ ,["i5","ins","フセヤ保険事務所","岐南町伏屋5-36","058-247-4506",35.3818719,136.7894442]
+ ,["i6","ins","かさまつ総合保険","岐南町下印食3-30 とらでんビル4C","058-201-6234",35.3889741,136.7709796]
+ ,["i7","ins","ほけん・レインボー","岐南町上印食9-50","",35.389487,136.7868686]
+ ,["i8","ins","ファイナンシャルアライアンス(株)","岐南町上印食8-123-1","",35.3890387,136.7879059]
+ ,["i9","ins","(株)ニューライフハヤシ","岐南町三宅3-264","058-245-1545",35.392636,136.796218]
+ ,["i10","ins","(株)エストピア","岐南町平成4-68","",35.3840091,136.7825863]
+ ,["i11","ins","(株)ACT","岐南町下印食5-72","058-216-0727",35.3889542,136.7680383]
+ ,["i12","ins","アシスト","岐南町八剣3-35","058-247-8969",35.3933412,136.7781185]
+ ,["b10","build","(株)マルシゲ工務店","岐南町三宅4-242","058-214-3273",35.3902985,136.7953424]
+ ,["b11","build","株式会社グッドホーム","岐南町八剣北4-5-1","0120-222-897",35.3958211,136.7849327]
+ ,["b12","build","株式会社クラフトコーポレーション(CRAFT HOME)","岐南町平成6-33-1","0120-706-764",35.3802439,136.7838672]
+ ,["b13","build","株式会社伊田屋","岐南町上印食9-103","058-247-3441",35.389425,136.785744]
+ ,["b14","build","ホームビルダー21","岐南町上印食5-77","",35.3941091,136.788661]
+ ,["b15","build","株式会社かね寿小島工務店","岐南町八剣北1丁目","",35.3991977,136.7843822]
+ ,["b16","build","(有)国土工務店","岐南町徳田西3-4","058-276-2440",35.3851694,136.7687687]
+ ,["b17","build","株式会社ツチモト建築 岐南リフォーム専門店","岐南町平島8-137","0120-809-301",35.3851715,136.8037043]
+ ,["b18","build","ウイニング・ホーム","岐南町平島4-23-1","0120-185-166",35.385956,136.8118059]
+ ,["b19","build","55HOUSE","岐南町徳田4-112-1","",35.3829739,136.7728278]
+ ,["b20","build","有限会社 ミヤビホーム","岐南町上印食8-28-2","058-214-9433",35.3888727,136.7897274]
+ ,["b21","build","村瀬工業","岐南町伏屋2-169","058-201-3661",35.3862392,136.7873216]
+ ,["b22","build","三起建設(有)","岐南町八剣北4-89","058-248-0773",35.3946898,136.7833653]
+ ,["b23","build","(有)木下建設","岐南町三宅7-180","058-245-0787",35.3903158,136.790487]
+ ,["b24","build","株式会社環境プロジェクト","岐南町平成3-76","",35.387245,136.7785362]
+ ,["b25","build","株式会社 龍建","岐南町平島4-138","",35.3834418,136.811924]
+ ,["b26","build","篠田株式会社 建設事業本部","岐南町野中1-8","058-245-5181",35.3874791,136.8029422]
+ ,["b27","build","株式会社タイヨウ産業","岐南町三宅8-220","058-245-5545",35.3887427,136.7975948]
+ ,["b28","build","東建設","岐南町八剣北5-77-6","058-240-0567",35.3948298,136.782772]
+ ,["b29","build","(有)丹波建設","岐南町平成1-3 5階","058-214-3661",35.3878073,136.7836214]
+ ,["b30","build","豊崎組株式会社","岐南町伏屋2-222〜225","058-215-6439",35.3873898,136.7860812]
+ ,["b31","build","(有)ライズトライ","岐南町伏屋3-185","058-249-7101",35.382546,136.794582]
+ ,["b32","build","(株)佳建","岐南町徳田3-11-1","058-214-4425",35.38337,136.776357]
+ ,["b33","build","(有)坂下建築工業","岐南町伏屋8-155-1","058-240-1038",35.381132,136.789838]
+ ,["b34","build","(株)アスア","岐南町徳田1-5","058-276-7322",35.3896293,136.7732264]
+ ,["b35","build","株式会社ジーエス資材センター","岐南町三宅6-7-1","058-216-0367",35.3902263,136.8003266]
+ ,["b36","build","大丸開発(株)","岐南町上印食8-82","0120-259-678",35.3903729,136.7889482]
+ ,["b37","build","(株)美建","岐南町八剣北2-56","058-245-7525",35.3986341,136.782109]
+ ,["b38","build","OKサービス","岐南町三宅5-296-1","058-216-5465",35.3915862,136.7916891]
+ ,["b39","build","(株)板橋組","岐南町八剣北3-155","058-245-2351",35.3963032,136.7793743]
+ ,["b40","build","総美クリエイト","岐南町若宮地3-120","058-214-7277",35.376378,136.7972346]
+ ,["b41","build","(有)加藤土木","岐南町八剣北1-113","",35.3989103,136.7844647]
+ ,["b42","build","ルルハウス","岐南町上印食9-79","058-247-6671",35.3894266,136.7864189]
+ ,["b43","build","共拓産業株式会社","岐南町伏屋4-62","058-216-5281",35.3853181,136.7900858]
+ ,["c8","care","はぐくみ","岐南町伏屋2-55","058-216-0245",35.386524,136.7895096]
+ ,["c9","care","みのり 介護サービス","岐南町上印食4-22","058-245-2412",35.3954814,136.7893055]
+ ,["c10","care","にっけん介護岐南","岐南町平成1-3 5階","058-248-1005",35.3878557,136.7836188]
+ ,["c11","care","ケアプランセンターゆかり岐南","岐南町伏屋3-298-1","058-201-1337",35.382071,136.793871]
+ ,["c12","care","訪問介護ステーションえん","岐南町上印食2-41 アビタシオン堀101","058-215-6415",35.3996636,136.7863088]
+ ,["c13","care","グリット事業所","岐南町伏屋4-134 クリエイト21","058-201-5580",35.3841989,136.7904719]
+ ,["c14","care","就労継続支援B型事業所らいず","岐南町三宅2-19","058-248-3351",35.3932,136.794821]
+ ,["c15","care","にっこリンクス","岐南町伏屋2-55","058-216-0978",35.3865434,136.7895363]
+ ,["c16","care","あんしんネットワークス B型事業所","岐南町平成2-118","058-216-1222",35.3875958,136.7813755]
+ ,["c17","care","一心","岐南町八剣北1-180-6","058-201-3699",35.3974722,136.7840969]
+ ,["c18","care","NOIE GINAN","岐南町八剣9-110","",35.3894632,136.7774097]
+ ,["c19","care","訪問看護ステーション サロンR","岐南町伏屋4-141-2 ForestaMⅡB棟","090-6596-6285",35.383841,136.7899549]
+ ,["c20","care","あなたのまちの訪問看護MIRAIYELL ぎふ","岐南町野中1-32-7","058-216-1123",35.3878796,136.8021032]
+ ,["c21","care","訪問看護ステーション くりのき","岐南町上印食3-147 サンライズ生島101","058-201-1928",35.3963336,136.7865327]
+ ,["c22","care","訪問看護ステーションかがやき","岐南町薬師寺4-12-12","",35.3758682,136.773565]
+ ,["m11","med","さかえ歯科クリニック","岐南町伏屋4-63","058-240-0644",35.384934,136.7899206]
+ ,["m12","med","秋田歯科医院","岐南町三宅2-119","058-247-1196",35.3948791,136.7915761]
+ ,["m13","med","小島歯科医院","岐南町平島5-144","058-245-2096",35.3868334,136.8073405]
+ ,["m14","med","みやかわ歯科","岐南町下印食3-22","058-272-9988",35.389436,136.770701]
+ ,["m15","med","なごやかクリニック","岐南町三宅2-2-169","058-201-1340",35.3953314,136.7898548]
+ ,["d6","design","(株)名岐コンサルタント","岐南町上印食2-75","",35.398185,136.786208]
+ ,["g4","logi","(株)LAN 本社営業所","岐南町平成1-2","058-215-6139",35.3877248,136.7840974]
+ ,["g5","logi","柳原商運株式会社","岐南町平島1-3-1","090-3152-8778",35.384089,136.81924]
+ ,["w3","whole","イースマイルジャパン","岐南町伏屋4-18","",35.3847314,136.7922411]
+ ,["f3","staff","株式会社ドリームアシスト岐阜","岐南町八剣北4-111 奥田ビル6階","058-259-6040",35.3936919,136.7847732]
+ ,["f4","staff","あんしんネットワーキング","岐南町平成2-2","058-246-0754",35.3868739,136.7807366]
+ ,["f5","staff","(株)ネバーランド","岐南町八剣北4-111","0120-729-735",35.3936919,136.7847732]
+ ,["f6","staff","ファロス株式会社","岐南町八剣北4-111","",35.3936919,136.7847732]
+ ,["a5","ad","印刷広告サービス","岐南町三宅3-194","058-215-0846",35.3928182,136.7967548]
+ ,["v6","car","オーマエ自動車","岐南町若宮地3-123","",35.3762356,136.7969932]
+ ,["v7","car","【輸入車整備】Square","岐南町上印食8-58-1","058-240-5282",35.3890132,136.7890464]
+ ,["v8","car","株式会社モータライズ ケータハム岐阜","岐南町八剣7-10","058-247-8001",35.3902366,136.7845081]
+ ,["v9","car","ガレージコバヤシ","岐南町平島8-135","058-246-8249",35.3863418,136.8035668]
+ ,["v10","car","アヴァルト","岐南町平島8-10-2","",35.3859478,136.8068649]
+ ,["v11","car","(有)萬侑自動車","岐南町平島4-178","058-246-2588",35.3844965,136.8109118]
+ ,["v12","car","(有)若園自動車工業所","岐南町伏屋7-43","058-245-3079",35.379715,136.794302]
+ ,["v13","car","岐南自動車サービス","岐南町八剣8-37","058-246-6469",35.3901368,136.7817815]
+ ,["v14","car","ガレージ・マック","岐南町徳田西3-97","058-276-9045",35.385246,136.7684128]
+ ,["v15","car","(株)藤自動車","岐南町三宅3-117","058-201-6400",35.3918432,136.7985424]
+ ,["v16","car","有限会社ギフキャリヤ","岐南町伏屋7-10-1","058-245-7811",35.3796897,136.794757]
+ ,["v17","car","(有)ガレージビッグバルブ 工場","岐南町三宅3-281","058-259-7122",35.3928386,136.7955086]
+ ,["v18","car","マイスターズ岐阜店","岐南町伏屋8-181","",35.3780712,136.7898607]
+ ,["v19","car","ガレージピース","岐南町平成3-175","",35.3856891,136.77865]
+ ,["v20","car","ジャッキオートモービル","岐南町平島8-136","058-337-8627",35.3854684,136.8036346]
+ ,["v21","car","エスエリート","岐南町徳田3-55","058-215-0200",35.3838388,136.778064]
+ ,["v22","car","(株)寺田自動車","岐南町八剣1-20","058-242-9677",35.3935413,136.7827577]
+ ,["v23","car","Mak Garage","岐南町徳田5-74-5","090-7914-5146",35.3809067,136.7756677]
 ].map(a=>({id:a[0],cat:a[1],name:a[2],addr:a[3],tel:a[4],lat:a[5],lng:a[6]}));
 
 const LANDMARKS = [
@@ -380,13 +549,17 @@ const PRESETS = [
   {name:"長住町",lat:35.4155,lng:136.7590},
   {name:"岐阜市役所(司町)",lat:35.4237,lng:136.7616},
   {name:"加納(加納新本町)",lat:35.4068,lng:136.7530},
-  {name:"岐阜県庁",lat:35.3912,lng:136.7222}
+  {name:"岐阜県庁",lat:35.3912,lng:136.7222},
+  {name:"岐南町役場",lat:35.3897765,lng:136.782289}
 ];
 
 /* ---------- storage ---------- */
 const KEY="flyerRoute.v1";
 let store={done:{},memo:{},cats:Object.keys(CATS),start:null,addr:"",radius:"1.5",mode:"walking",skipDone:true,limit:"all"};
 try{ const s=JSON.parse(localStorage.getItem(KEY)||"null"); if(s) store=Object.assign(store,s);}catch(e){}
+// 旧15業種を全部選んでいた場合は、追加業種も対象にする。個別の選択は維持する。
+const legacyCats=Object.keys(CATS).slice(0,15);
+if(Array.isArray(store.cats)&&store.cats.length===legacyCats.length&&legacyCats.every(k=>store.cats.includes(k)))store.cats=Object.keys(CATS);
 function save(){ try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){} }
 
 let start = store.start || {name:PRESETS[0].name,lat:PRESETS[0].lat,lng:PRESETS[0].lng};
@@ -478,7 +651,7 @@ $("addrGo").onclick=searchAddr;$("addr").onkeydown=e=>{if(e.key==="Enter"){e.pre
 /* ---------- settings controls ---------- */
 const catsEl=$("cats");
 Object.entries(CATS).forEach(([k,c])=>{
-  const n=PLACES.filter(p=>p.cat===k).length;
+  const n=ALL().filter(p=>p.cat===k).length;
   const l=document.createElement("label");l.className="chip";
   l.innerHTML=`<input type="checkbox" value="${k}"><span class="dot" style="background:${c.color}"></span>${c.label}<span class="n">${n}</span>`;
   const cb=l.querySelector("input");cb.checked=store.cats.includes(k);
@@ -497,7 +670,7 @@ function condTap(k){
 function seg(ids,key,after){const boxes=ids.map(id=>$(id));const sync=()=>boxes.forEach(box=>box.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.v===store[key])));
   boxes.forEach(box=>box.querySelectorAll("button").forEach(b=>b.onclick=()=>{store[key]=b.dataset.v;save();sync();condOpen=null;syncCond();after();}));sync();}
 seg(["radiusSeg","radiusQ"],"radius",()=>render(true));seg(["modeSeg","modeQ"],"mode",()=>render());seg(["limitSeg","limitQ"],"limit",()=>render(true));
-["税理士","会計事務所","社会保険労務士","行政書士","司法書士","土地家屋調査士","不動産会社","保険代理店","工務店","建設会社","介護事業所","歯科医院","クリニック","法律事務所","設計事務所","運送会社","卸売","人材派遣","広告代理店","自動車整備"].forEach(w=>{
+["税理士","会計事務所","社会保険労務士","行政書士","司法書士","土地家屋調査士","不動産会社","保険代理店","工務店","建設会社","介護事業所","歯科医院","クリニック","法律事務所","設計事務所","運送会社","卸売","人材派遣","広告代理店","自動車整備","飲食店","喫茶店","小売店","美容室","理容室","エステサロン","ネイルサロン","整体院","接骨院","鍼灸院","調剤薬局","学習塾","習い事教室","保育園","幼稚園","旅館","ホテル","清掃会社","クリーニング店","電気工事","水道工事","設備工事","印刷会社","看板製作","システム開発会社","動物病院","ペットサロン"].forEach(w=>{
   const a=document.createElement("a");a.target="_blank";a.rel="noopener";a.textContent="近くの"+w;a.href="https://www.google.com/maps/search/"+encodeURIComponent(w);$("near").appendChild(a);});
 
 /* ---------- route ---------- */
@@ -524,14 +697,14 @@ function compute(){
 }
 const SPEED={walking:4.5,bicycling:12,driving:22},ROAD=1.3,CH=9;
 const RAD={"0.8":"800m","1.5":"1.5km","3":"3km","6":"6km","99":"距離無制限"};
-const MODE={walking:"🚶 徒歩",bicycling:"🚲 自転車",driving:"🚗 車"};
+const MODE={walking:"徒歩",bicycling:"自転車",driving:"車"};
 function bindMemo(el,p){
   const mi=el.querySelector(".memo"),t=el.querySelector(".memotxt");
   el.querySelector(".mb").onclick=()=>{mi.classList.toggle("show");if(mi.classList.contains("show"))mi.focus();};
   mi.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();mi.blur();}};
   // 作り直すと「配布した」のタップが消えるので、メモの表示だけ更新する
   mi.onchange=()=>{const v=mi.value.trim();if(v)store.memo[p.id]=v;else delete store.memo[p.id];save();
-    t.textContent="📝 "+v;t.style.display=v?"":"none";mi.classList.remove("show");toast("メモを保存しました");};
+    t.textContent="メモ:"+v;t.style.display=v?"":"none";mi.classList.remove("show");toast("メモを保存しました");};
 }
 function markDone(p){store.done[p.id]=today();save();render();
   toast(`「${p.name.slice(0,12)}${p.name.length>12?"…":""}」を配布済みに`,"元に戻す",()=>{delete store.done[p.id];save();render();});}
@@ -539,7 +712,7 @@ function move(i,d){const ids=route.map(p=>p.id);const j=i+d;if(j<0||j>=ids.lengt
 function renderRoute(){
   const mode=store.mode;
   const cond=$("cond");cond.innerHTML="";
-  [["📍 "+start.name,"start"],[store.limit==="all"?"件数:全部":`件数:${store.limit}件`,"limit"],[RAD[store.radius],"radius"],[MODE[mode],"mode"],[`業種 ${store.cats.length}/${Object.keys(CATS).length}`,"cats"]].forEach(([t,k])=>{
+  [[start.name,"start"],[store.limit==="all"?"件数:全部":`件数:${store.limit}件`,"limit"],[RAD[store.radius],"radius"],[MODE[mode],"mode"],[`業種 ${store.cats.length}/${Object.keys(CATS).length}`,"cats"]].forEach(([t,k])=>{
     const b=document.createElement("button");b.textContent=t;b.classList.toggle("on",condOpen===k);b.onclick=()=>condTap(k);cond.appendChild(b);});
   const dist=pathLen([start,...route])*ROAD;
   $("sCount").textContent=route.length;$("sKm").textContent=dist.toFixed(1);$("sMin").textContent=Math.round(dist/SPEED[mode]*60);
@@ -549,7 +722,7 @@ function renderRoute(){
     const chunk=route.slice(0,CH),dest=chunk[chunk.length-1];
     let u="https://www.google.com/maps/dir/?api=1"+(fromHere?"":"&origin="+encodeURIComponent(ll(start)))+"&destination="+encodeURIComponent(ll(dest))+"&travelmode="+mode;
     if(chunk.length>1)u+="&waypoints="+chunk.slice(0,-1).map(p=>encodeURIComponent(ll(p))).join("%7C");
-    nb.href=u;nb.classList.remove("off");nb.textContent=route.length>CH?`▶ ナビ開始(1〜${CH}件目)`:`▶ ナビ開始(${route.length}件)`;
+    nb.href=u;nb.classList.remove("off");nb.textContent=route.length>CH?`ナビ開始(1〜${CH}件目)`:`ナビ開始(${route.length}件)`;
   }else{nb.removeAttribute("href");nb.classList.add("off");nb.textContent="配る先がありません";}
   $("note").textContent=!route.length?(visible.length?"この範囲はすべて配布済みです。距離か業種を広げてください。":"条件に合う配布先がありません。設定で業種か距離を広げてください。")
     :(route.length>CH?"「配布した」を押すと、ナビが次の未配布へ進みます。":"")+(fromHere?" 現在地から案内します。":"");
@@ -565,7 +738,7 @@ function renderRoute(){
     if(sorting){
       el.className="item compact";
       el.innerHTML=`<div class="num" style="background:${c.color}">${i+1}</div><div><div class="nm">${esc(p.name)}${tags}</div><div class="meta">${c.label}</div></div>
-        <div class="handle" aria-label="ドラッグして並べ替え">≡</div>`;
+        <div class="handle" aria-label="ドラッグして並べ替え">移動</div>`;
       el.dataset.id=p.id;
       box.appendChild(el);return;
     }
@@ -575,14 +748,14 @@ function renderRoute(){
       <div class="meta">${c.label}${i?`・前の先から${km(route[i-1],p).toFixed(1)}km`:""}</div>
       <div class="meta">${esc(p.addr||"")}</div>
 </div>
-      <button class="donebtn" aria-label="配布した"><span class="ck">✓</span>配布した</button>
-      <div class="foot"><div class="memotxt"${memo?"":' style="display:none"'}>📝 ${esc(memo)}</div>
+      <button class="donebtn" aria-label="配布した">配布した</button>
+      <div class="foot"><div class="memotxt"${memo?"":' style="display:none"'}>メモ:${esc(memo)}</div>
       <div class="acts">
-        <a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${ll(p)}&travelmode=${mode}"><span>🧭</span>ナビ</a>
-        ${tel?`<a href="tel:${tel}"><span>📞</span>電話</a>`:""}
-        <a target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(p.name+" 岐阜")}"><span>🔎</span>HP</a>
-        <button class="mb"><span>📝</span>メモ</button>
-        <button class="sk"><span>⏭</span>スキップ</button>
+        <a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${ll(p)}&travelmode=${mode}">ナビ</a>
+        ${tel?`<a href="tel:${tel}">電話</a>`:""}
+        <a target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(p.name+" 岐阜")}">HP</a>
+        <button class="mb">メモ</button>
+        <button class="sk">スキップ</button>
       </div>
       <input class="memo" placeholder="例:受付に手渡し、不在など" value="${esc(memo)}"></div>`;
     el.querySelector(".donebtn").onclick=()=>markDone(p);
@@ -597,7 +770,7 @@ function renderRoute(){
       onEnd:()=>{const ids=[...box.querySelectorAll(".item")].map(x=>x.dataset.id);
         if(ids.join()!==route.map(p=>p.id).join()){store.manual=ids;save();render();}}});
   }
-  $("sortBtn").classList.toggle("on",sorting);$("sortBtn").textContent=sorting?"✓ 完了":"↕ 並べ替え";
+  $("sortBtn").classList.toggle("on",sorting);$("sortBtn").textContent=sorting?"完了":"並べ替え";
   $("sortBtn").style.display=route.length>1||sorting?"":"none";
   $("manualNote").classList.toggle("show",!!store.manual);
   const sb=$("skipBox");sb.innerHTML="";
@@ -628,8 +801,8 @@ function renderDone(){
       const c=CATS[p.cat],memo=store.memo[p.id]||"",tel=(p.tel||"").replace(/[^0-9]/g,"");
       const it=document.createElement("div");it.className="ditem";
       it.innerHTML=`<span class="dot" style="background:${c.color}"></span>
-        <div><div class="nm">${esc(p.name)}</div><div class="meta">${c.label}${p.tel?`・<a href="tel:${tel}">${p.tel}</a>`:""}</div><div class="memotxt"${memo?"":' style="display:none"'}>📝 ${esc(memo)}</div></div>
-        <div class="dbtns"><button class="undo mb">📝</button><button class="undo ud">戻す</button></div>
+        <div><div class="nm">${esc(p.name)}</div><div class="meta">${c.label}${p.tel?`・<a href="tel:${tel}">${p.tel}</a>`:""}</div><div class="memotxt"${memo?"":' style="display:none"'}>メモ:${esc(memo)}</div></div>
+        <div class="dbtns"><button class="undo mb">メモ</button><button class="undo ud">戻す</button></div>
         <input class="memo" placeholder="例:受付に手渡し、不在など" value="${esc(memo)}">`;
       bindMemo(it,p);
       it.querySelector(".ud").onclick=()=>{delete store.done[p.id];save();render();renderDone();toast("未配布に戻しました","取り消し",()=>{store.done[p.id]=d;save();render();renderDone();});};
@@ -655,8 +828,8 @@ function renderAddList(){
   if(!list.length){box.innerHTML='<div class="empty">追加できる未配布の先はありません</div>';return;}
   list.forEach(p=>{const c=CATS[p.cat];const r=document.createElement("div");r.className="addrow";
     const sk=store.skip[p.id]===today();
-    r.innerHTML=`<span class="dot" style="background:${c.color}"></span><div><div class="nm">${esc(p.name)}${p.custom?'<span class="tag">登録</span>':""}</div><div class="meta">${c.label}・${km(start,p).toFixed(1)}km${sk?"・スキップ中":""}${p.custom?' <button class="delbtn">削除</button>':""}</div></div><button class="addbtn">＋ 追加</button>`;
-    r.querySelector(".addbtn").onclick=e=>{delete store.skip[p.id];store.extra[p.id]=today();save();render();e.target.textContent="✓ 追加済";e.target.classList.add("added");e.target.disabled=true;toast("ルートに追加しました");};
+    r.innerHTML=`<span class="dot" style="background:${c.color}"></span><div><div class="nm">${esc(p.name)}${p.custom?'<span class="tag">登録</span>':""}</div><div class="meta">${c.label}・${km(start,p).toFixed(1)}km${sk?"・スキップ中":""}${p.custom?' <button class="delbtn">削除</button>':""}</div></div><button class="addbtn">追加</button>`;
+    r.querySelector(".addbtn").onclick=e=>{delete store.skip[p.id];store.extra[p.id]=today();save();render();e.target.textContent="追加済";e.target.classList.add("added");e.target.disabled=true;toast("ルートに追加しました");};
     const del=r.querySelector(".delbtn");if(del)del.onclick=()=>{store.custom=store.custom.filter(x=>x.id!==p.id);delete store.extra[p.id];if(store.manual)store.manual=store.manual.filter(x=>x!==p.id);save();render();renderAddList();toast("登録を削除しました");};
     box.appendChild(r);});
 }
