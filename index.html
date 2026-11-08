@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1f5f8b">
+<title>配布ルート</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{--bg:#f6f5f1;--card:#ffffff;--ink:#1d1d1b;--sub:#6b6a66;--line:#e3e1da;--accent:#1f5f8b;--accent-ink:#ffffff;--warn:#b5541c;}
+@media (prefers-color-scheme: dark){:root{--bg:#161615;--card:#21211f;--ink:#ecebe6;--sub:#a3a29c;--line:#34332f;--accent:#6fb0dc;--accent-ink:#0d1b24;--warn:#e08a55;}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;font-size:16px;line-height:1.5}
+body.lock{overflow:hidden}
+.top{position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--line)}
+.top h1{font-size:17px;margin:0;flex:1}
+button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 14px;border-radius:10px;cursor:pointer;min-height:44px}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+main{max-width:520px;margin:0 auto;padding:10px 12px 60px;display:grid;gap:10px}
+.cond{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;font-size:13px;color:var(--sub);background:var(--card)}
+.cond b{color:var(--ink);font-weight:600}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.summary div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.summary b{font-size:22px;display:block;line-height:1.2}
+.summary span{font-size:11px;color:var(--sub)}
+.navbtn{display:flex;align-items:center;justify-content:center;min-height:54px;border-radius:12px;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:700;font-size:16px}
+.legnote{font-size:12px;color:var(--sub);margin:-2px 2px 0}
+.mapwrap{position:relative;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+#map{width:100%;height:48vh;min-height:280px;max-height:460px}
+.locbtn{position:absolute;right:10px;bottom:10px;z-index:500;min-height:44px;box-shadow:0 1px 4px rgba(0,0,0,.2);font-weight:600}
+.pin{width:28px;height:28px;border-radius:50%;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.pin.done{background:#9a9890!important;width:20px;height:20px;font-size:10px}
+.pin.start{background:#1d1d1b;width:32px;height:32px}
+.leaflet-popup-content{font-family:inherit;font-size:13px}
+ol.stops{list-style:none;margin:0;padding:0;background:var(--card);border:1px solid var(--line);border-radius:12px}
+ol.stops li{display:grid;grid-template-columns:30px 1fr 52px;gap:10px;padding:12px;border-top:1px solid var(--line);align-items:start}
+ol.stops li:first-child{border-top:none}
+ol.stops li.done{opacity:.5}
+.num{width:28px;height:28px;border-radius:50%;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.nm{font-weight:700;font-size:15px;line-height:1.35}
+.meta{font-size:12px;color:var(--sub);margin-top:2px}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.acts a,.acts button{font-size:13px;min-height:36px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);text-decoration:none;display:inline-flex;align-items:center}
+.memo{margin-top:8px;width:100%;padding:8px 10px;font-size:16px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);display:none}
+.memo.show{display:block}
+.memotxt{font-size:12px;margin-top:6px;background:var(--bg);border-radius:6px;padding:4px 8px}
+.check{display:flex;flex-direction:column;align-items:center;font-size:11px;color:var(--sub);gap:2px;padding-top:2px}
+.check input{width:28px;height:28px;margin:0}
+#pickBanner{display:none;position:sticky;top:65px;z-index:999;background:var(--warn);color:#fff;padding:10px 14px;font-size:14px;align-items:center;justify-content:space-between;gap:8px}
+#pickBanner.show{display:flex}
+#pickBanner button{min-height:36px;padding:4px 12px;background:#fff;color:#000;border:none}
+.sheet{position:fixed;inset:0;z-index:2000;background:var(--bg);overflow-y:auto;transform:translateY(100%);transition:transform .25s ease;visibility:hidden}
+.sheet.open{transform:none;visibility:visible}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 12px}
+.sec h2{font-size:14px;margin:0 0 8px;color:var(--sub)}
+label.f{display:block;font-size:13px;color:var(--sub);margin:10px 0 4px}
+input[type=text],textarea,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;font-size:16px}
+textarea{min-height:80px;font-size:13px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row button{flex:1}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.chip{display:flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:var(--bg);min-height:44px}
+.chip input{margin:0;width:20px;height:20px;flex:none}
+.chip .n{margin-left:auto;color:var(--sub);font-size:11px}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.muted{color:var(--sub);font-size:12px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg5{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.seg5 button{padding:8px 0;font-size:13px}
+.seg button.on,.seg5 button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+.toggle{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:14px}
+.toggle input{width:22px;height:22px}
+.near{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.near a{display:flex;align-items:center;justify-content:center;min-height:44px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);text-decoration:none;font-size:13px;text-align:center;padding:4px}
+.results button{display:block;width:100%;text-align:left;margin-top:6px;font-size:14px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:3000}
+.toast.show{opacity:1}
+details summary{cursor:pointer;color:var(--sub);font-size:13px;min-height:32px}
+</style>
+</head>
+<body>
+<div class="top"><h1>配布ルート</h1><button id="hereTop">📍現在地</button><button id="openSet">⚙</button></div>
+<div id="pickBanner"><span>地図をタップして出発地点を選んでください</span><button id="pickCancel">やめる</button></div>
+<main>
+  <button class="cond" id="condBtn"><span id="condTxt"></span><span>›</span></button>
+  <div class="summary">
+    <div><b id="sCount">0</b><span>件(残り)</span></div>
+    <div><b id="sKm">0</b><span>km(目安)</span></div>
+    <div><b id="sMin">0</b><span>分(移動のみ)</span></div>
+  </div>
+  <div id="legs"></div>
+  <p class="legnote" id="legNote"></p>
+  <div class="mapwrap"><div id="map"></div><button class="locbtn" id="hereMap">📍 現在地から</button></div>
+  <ol class="stops" id="stops"></ol>
+</main>
+
+<div class="sheet" id="sheet">
+  <div class="top"><h1>設定</h1><button class="primary" id="closeSet">完了</button></div>
+  <div class="sec">
+    <h2>出発地点</h2>
+    <div class="row"><button id="hereBtn" class="primary">📍 現在地を使う</button></div>
+    <label class="f" for="addr">住所で探す</label>
+    <div class="row" style="flex-wrap:nowrap"><input type="text" id="addr" placeholder="例:岐阜市長住町2丁目" autocomplete="street-address"><button id="addrGo" style="flex:none">検索</button></div>
+    <div class="results" id="addrRes"></div>
+    <label class="f" for="preset">よく使う場所</label>
+    <select id="preset"></select>
+    <div class="row" style="margin-top:8px"><button id="pickBtn">地図をタップで指定</button></div>
+    <p class="muted" id="startNow"></p>
+  </div>
+  <div class="sec">
+    <h2>業種</h2>
+    <div class="chips" id="cats"></div>
+    <div class="row" style="margin-top:8px"><button id="allOn">全部選ぶ</button><button id="allOff">全部外す</button></div>
+  </div>
+  <div class="sec">
+    <h2>範囲と移動手段</h2>
+    <label class="f">出発地点からの距離</label>
+    <div class="seg5" id="radiusSeg"><button data-v="0.8">800m</button><button data-v="1.5">1.5km</button><button data-v="3">3km</button><button data-v="6">6km</button><button data-v="99">無制限</button></div>
+    <label class="f">移動手段</label>
+    <div class="seg" id="modeSeg"><button data-v="walking">徒歩</button><button data-v="bicycling">自転車</button><button data-v="driving">車</button></div>
+    <label class="toggle"><input type="checkbox" id="skipDone">配布済みはルートから外す</label>
+  </div>
+  <div class="sec">
+    <h2>近くの事業所をGoogleマップで探す</h2>
+    <p class="muted" style="margin-top:0">リストにない事業所を、今いる場所の周辺で探せます。</p>
+    <div class="near" id="near"></div>
+  </div>
+  <div class="sec">
+    <h2>記録</h2>
+    <p class="muted" style="margin-top:0">配布済みのチェックとメモは、このスマホのブラウザの中に残ります。機種変更のときはコピーして移してください。</p>
+    <div class="row"><button id="exportBtn">記録をコピー</button><button id="importBtn">記録を読み込む</button></div>
+    <div class="row" style="margin-top:8px"><button id="resetBtn">チェックを全部外す</button></div>
+    <textarea id="io" style="display:none;margin-top:8px" placeholder="コピーした記録を貼り付けて「記録を読み込む」"></textarea>
+    <details style="margin-top:10px"><summary>データについて</summary>
+      <p class="muted">掲載先は2026年11月時点のGoogleマップの情報をもとにしています。住所はGoogleの表記で、一部ローマ字が残っています。(要確認)の付いた所は現地の看板で正式名を確認してください。全国チェーンの店舗や大手の支店は外しています。地図:国土地理院。住所検索:国土地理院 地名検索。</p>
+    </details>
+  </div>
+  <div style="height:30px"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const CATS = {
+  tax:   {label:"税理士・会計", color:"#1f77b4"},
+  sr:    {label:"社労士・行政書士", color:"#9467bd"},
+  judi:  {label:"司法書士・測量登記", color:"#8c564b"},
+  re:    {label:"不動産", color:"#2ca02c"},
+  ins:   {label:"保険代理店", color:"#ff7f0e"},
+  build: {label:"工務店・建設", color:"#d62728"},
+  care:  {label:"介護・訪問看護", color:"#e377c2"},
+  med:   {label:"歯科・クリニック", color:"#17becf"},
+  law:   {label:"法律事務所", color:"#393b79"},
+  design:{label:"設計事務所", color:"#bcbd22"},
+  logi:  {label:"運送・倉庫", color:"#7f7f7f"},
+  whole: {label:"卸売・製造", color:"#ad494a"},
+  staff: {label:"人材派遣", color:"#637939"},
+  ad:    {label:"広告・制作", color:"#ce6dbd"},
+  car:   {label:"自動車整備", color:"#8c6d31"}
+};
+const PLACES = [
+ ["t1","tax","税理士法人服部会計事務所","2-22 Hatsuhimachi, 岐阜市","0120-864-459",35.447778,136.771296],
+ ["t2","tax","パロット税理士法人","岐阜市茜部本郷3-157 KG茜部ビル2階","058-201-2740",35.3886729,136.7530119],
+ ["t3","tax","税理士事務所WATT","岐阜市金町1-4 プライム岐阜金町201","058-213-3080",35.4216446,136.7579885],
+ ["t4","tax","税理士法人NEXT","岐阜市本荘中ノ町1-1","058-275-3555",35.4074575,136.7349889],
+ ["t5","tax","さかい経営会計事務所","岐阜市橋本町2-8 8階","058-213-2780",35.4109201,136.752761],
+ ["t6","tax","税理士法人ぷらす","岐阜市萱場南1-9-13","058-231-9709",35.4321624,136.7340458],
+ ["t7","tax","幅会計事務所","岐阜市上竹町21","058-213-7966",35.4267147,136.7633675],
+ ["t8","tax","耕夢しのだ会計事務所","岐阜市入舟町3-32-3 3階","058-259-3292",35.4112227,136.7786568],
+ ["t9","tax","地守亮税理士事務所","岐阜市川端町13-1 イーストアサノ5N","058-263-1818",35.4224412,136.7616888],
+ ["t10","tax","佐藤豊和税理士事務所","岐阜市菅原町1-11-1","058-262-2265",35.422599,136.756346],
+ ["t11","tax","こだま税理士事務所","岐阜市金町1-21","058-214-9554",35.4209903,136.7571818],
+ ["t12","tax","税理士事務所(プラドビル4A・要確認)","岐阜市神田町1-8-4 プラドビル4A","058-214-3660",35.4213429,136.7610566],
+ ["s1","sr","三宅社会保険労務士法人","岐阜市大宝町2-14","058-251-3166",35.4139224,136.7522084],
+ ["s2","sr","わに行政書士・社会保険労務士事務所","岐阜市佐久間町1","058-227-3751",35.4273676,136.7588366],
+ ["s3","sr","武藤社会保険労務士事務所","岐阜市加納新本町3-1-503","058-242-9106",35.4068802,136.7513078],
+ ["s4","sr","行政書士法人山﨑事務所","岐阜市加納清水町1-14-1","058-274-8351",35.4075679,136.7570567],
+ ["s5","sr","行政書士田中将人事務所","8-1-1 Tatsutamachi 1301, 岐阜市","070-6584-2468",35.4077124,136.7670886],
+ ["j1","judi","田内・高平事務所","岐阜市東金宝町4-15-1 田内ビル","058-266-9211",35.41466,136.766492],
+ ["j2","judi","髙島武男・髙島誠也司法書士合同事務所","岐阜市金竜町5-9","058-245-6152",35.4153843,136.7701086],
+ ["j3","judi","中島寛孝司法書士事務所","岐阜市鶴舞町1-19-18","058-246-2765",35.4150574,136.7700446],
+ ["j4","judi","司法書士法人岐阜サンデー法務事務所","岐阜市六条南3-2","058-215-8560",35.3955094,136.7405659],
+ ["r1","re","長住不動産","岐阜市羽根町12","058-265-0015",35.413341,136.7588067],
+ ["r2","re","Yes不動産(新岐阜商会)","岐阜市清住町2-6","058-213-4766",35.4117411,136.7621414],
+ ["i1","ins","株式会社オールプロ","岐阜市南殿町1-25-2","0120-506-026",35.4177682,136.7642734],
+ ["i2","ins","岐阜第一保険サービス","岐阜市小熊町2-20","058-263-6009",35.4236421,136.7632158],
+ ["i3","ins","株式会社協和 岐阜の保険代理店","岐阜市秋津町8-2","058-215-7750",35.423684,136.762273],
+ ["i4","ins","グローバルアイディアル","岐阜市金町6-21 4F","058-214-6172",35.4137345,136.7565018],
+ ["b1","build","Fukoku Construction(要確認)","岐阜市東金宝町2-10","058-264-4593",35.4150332,136.7633807],
+ ["b2","build","東建設工業","岐阜市桜通5-12","058-251-4118",35.4183721,136.7425779],
+ ["b3","build","Chikamatsu Construction(要確認)","岐阜市雪見町1-5","058-245-5656",35.4173851,136.7760683],
+ ["b4","build","Masayuki Construction(要確認)","岐阜市菅生1-4-17 モンパオ21 A-16","058-214-8630",35.4215634,136.7347596],
+ ["b5","build","安江工務店 岐阜県庁前店","岐阜市薮田南3-1-2","058-271-8800",35.3902553,136.726036],
+ ["b6","build","シンプル工務店 六条スタジオ","岐阜市六条大溝3-1-16","058-213-7811",35.3911524,136.7366218],
+ ["b7","build","シンプル工務店 早田スタジオ","岐阜市栄新町3-12","058-213-9518",35.4390518,136.7601843],
+ ["b8","build","森住建(岐阜のおうちLABO)","岐阜市薮田南5-6-3","058-213-3149",35.3903197,136.7172682],
+ ["b9","build","中垣工務店","6-2 Hinominami, 岐阜市","058-374-8010",35.4295523,136.8157584],
+ ["c1","care","和光会岐阜ビル(ケアサポート岐阜25・ケアプランセンター白山)","岐阜市鉄明通4-4","058-262-6607",35.4176285,136.7545957],
+ ["c2","care","てんしん訪問看護ステーション","岐阜市加納新本町1-8 2F","058-227-6033",35.406445,136.7537483],
+ ["c3","care","訪問看護ステーションそら","3-11 Yoshichō ドリームヨシマチ1B, 岐阜市","058-213-8401",35.4119471,136.742403],
+ ["c4","care","ケアサポート島25","岐阜市北島1-4-4","058-216-2770",35.4274856,136.7295509],
+ ["c5","care","プライムステージ柳ケ瀬","岐阜市柳ケ瀬通6-6-2","058-215-0385",35.4200358,136.754202],
+ ["c6","care","ハートケア松岡(介護老人保健施設)","岐阜市長旗町1-8-8","058-265-8100",35.4145629,136.7608573],
+ ["c7","care","せせらぎ居宅介護支援事務所","岐阜市九重町1-10-1","058-214-6151",35.4133572,136.7718258]
+ ,["j5","judi","塚原一成 法務・登記・測量事務所","岐阜市金園町6-10","058-247-7013",35.41683,136.76975]
+ ,["j6","judi","後藤登記測量合同事務所","岐阜市鶴田町2-7-6","058-246-1661",35.414746,136.76879]
+ ,["j7","judi","石坂将司測量登記事務所","1-26-1 Tōeichō, 岐阜市","058-245-7891",35.41465,136.771914]
+ ,["j8","judi","Kamimura 測量登記事務所(要確認)","7-25-26 Kitaisshiki, 岐阜市","058-240-5216",35.417387,136.79334]
+ ,["m1","med","i・オーラルクリニック","岐阜市橋本町2丁目","058-213-6411",35.410691,136.754199]
+ ,["m2","med","Yamauchi Dental Clinic(要確認)","岐阜市長住町8-18-4","058-213-5953",35.412541,136.750794]
+ ,["m3","med","Yamakatu Dental Clinic(要確認)","岐阜市神田町9-15","058-262-9914",35.412004,136.759221]
+ ,["m4","med","Marumiya Dental Clinic(要確認)","岐阜市鏑木町14-1","058-264-8011",35.416353,136.758438]
+ ,["m5","med","Kishimoto 矯正歯科(要確認)","岐阜市長住町2-6-2 大橋ビル","058-266-9001",35.412341,136.760431]
+ ,["m6","med","Nakamura Clinic(要確認)","岐阜市東金宝町1丁目","058-264-0860",35.415102,136.760979]
+ ,["m7","med","Ando 内科クリニック(要確認)","5 Higashikomazumechō, 岐阜市","058-262-2974",35.416386,136.763636]
+ ,["m8","med","Kato 内科(要確認)","1-18 Kanayachō, 岐阜市","058-262-0556",35.423209,136.763683]
+ ,["m9","med","川瀬医院","岐阜市金竜町2-13","058-262-1412",35.415309,136.764501]
+ ,["m10","med","Takai Clinic(要確認)","2-17-1 Akebonochō, 岐阜市","058-247-2356",35.41278,136.774478]
+ ,["l1","law","武田法律事務所","岐阜市神田町6-25-1 アーバンクマダ2階","058-214-3807",35.415284,136.759676]
+ ,["l2","law","Kumada Law Offices(要確認)","2-12-1 Agatamachi, 岐阜市","058-214-6823",35.413655,136.761359]
+ ,["l3","law","弁護士法人 Morikawa Suzuki 法律事務所(要確認)","16 Egawachō, 岐阜市","058-262-4982",35.422615,136.76049]
+ ,["d1","design","株式会社ミユキデザイン一級建築士事務所","42 Mitonochō, 岐阜市","058-264-3202",35.41872,136.76118]
+ ,["d2","design","創建設計株式会社","23 Matsuyachō, 岐阜市","058-215-9127",35.428341,136.764572]
+ ,["d3","design","株式会社 起雲社寺建築設計","岐阜市加納本町6-2","058-338-5390",35.406822,136.755118]
+ ,["d4","design","武藤圭太郎建築設計事務所","29 Imakomachi, 岐阜市","058-215-7272",35.424443,136.761562]
+ ,["d5","design","大建設計(株)","岐阜市佐久間町20","058-265-5766",35.426726,136.758146]
+ ,["g1","logi","濃飛倉庫運輸(株)(橋本町)","岐阜市橋本町2-20","058-251-0111",35.410343,136.752799]
+ ,["g2","logi","岐阜新聞輸送(株) 本社","3-8 Tagamichō, 岐阜市","058-245-4422",35.411072,136.770956]
+ ,["g3","logi","濃飛倉庫運輸 岐阜総合輸送センター","4-17-1 Imamine, 岐阜市","058-276-3111",35.399995,136.709142]
+ ,["w1","whole","(株)田中繊維","岐阜市長住町9-11","058-253-8644",35.412712,136.74753]
+ ,["w2","whole","ウインザー株式会社","474-10 Kamikawate, 岐阜市","058-271-5546",35.403329,136.769871]
+ ,["f1","staff","株式会社モアナスタッフ","岐阜市柳ケ瀬通1-12 岐阜中日ビル8階","058-374-4580",35.418951,136.759752]
+ ,["f2","staff","株式会社トライフィット 岐阜オフィス","岐阜市神田町6-16-2","058-213-8085",35.416564,136.759834]
+ ,["a1","ad","(株)アド・プロ","岐阜市旭町1-2 西塚ビル2F","058-263-5141",35.423092,136.761989]
+ ,["a2","ad","クリエーションネットワーク","3-25 Yatsuumechō, 岐阜市","058-263-1620",35.42295,136.752316]
+ ,["a3","ad","岐阜広告","岐阜市今沢町12 岐阜新聞別館2F","058-265-5585",35.423974,136.761351]
+ ,["a4","ad","SOU株式会社","3-17-21 Noritakehigashi, 岐阜市","058-213-1730",35.444137,136.746836]
+ ,["v1","car","有限会社 丸泰自動車工業","1-6-3 Shiomachi, 岐阜市","058-245-6394",35.419752,136.776919]
+ ,["v2","car","日の丸興業株式会社","22 Nishiakemichō, 岐阜市","058-271-6207",35.397958,136.762676]
+ ,["v3","car","小川自動車工場","岐阜市金宝町4-5","058-262-6920",35.414917,136.754291]
+ ,["v4","car","Sakurai Auto Service(要確認)","1-17 Tōeichō, 岐阜市","058-259-7090",35.414634,136.773526]
+ ,["v5","car","岐阜自動車センター","岐阜市清本町7-71","",35.404601,136.737989]
+].map(a=>({id:a[0],cat:a[1],name:a[2],addr:a[3],tel:a[4],lat:a[5],lng:a[6]}));
+
+const LANDMARKS = [
+  {name:"JR岐阜駅",lat:35.4093,lng:136.7564},
+  {name:"名鉄岐阜駅",lat:35.4113,lng:136.7595},
+  {name:"柳ケ瀬",lat:35.4205,lng:136.7590},
+  {name:"問屋町",lat:35.4119,lng:136.7557},
+  {name:"岐阜市役所",lat:35.4237,lng:136.7616},
+  {name:"岐阜県庁",lat:35.3912,lng:136.7222}
+];
+const PRESETS = [
+  {name:"JR岐阜駅",lat:35.4093,lng:136.7564},
+  {name:"名鉄岐阜駅",lat:35.4113,lng:136.7595},
+  {name:"柳ケ瀬(高島屋前あたり)",lat:35.4196,lng:136.7590},
+  {name:"長住町",lat:35.4155,lng:136.7590},
+  {name:"岐阜市役所(司町)",lat:35.4237,lng:136.7616},
+  {name:"加納(加納新本町)",lat:35.4068,lng:136.7530},
+  {name:"岐阜県庁",lat:35.3912,lng:136.7222}
+];
+
+/* ---------- storage ---------- */
+const KEY="flyerRoute.v1";
+let store={done:{},memo:{},cats:Object.keys(CATS),start:null,addr:"",radius:"1.5",mode:"walking",skipDone:true};
+try{ const s=JSON.parse(localStorage.getItem(KEY)||"null"); if(s) store=Object.assign(store,s);}catch(e){}
+function save(){ try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){} }
+
+let start = store.start || {name:PRESETS[0].name,lat:PRESETS[0].lat,lng:PRESETS[0].lng};
+
+/* ---------- geo ---------- */
+function km(a,b){const R=6371,t=Math.PI/180,dLa=(b.lat-a.lat)*t,dLo=(b.lng-a.lng)*t;
+  const x=Math.sin(dLa/2)**2+Math.cos(a.lat*t)*Math.cos(b.lat*t)*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
+function pathLen(p){let s=0;for(let i=1;i<p.length;i++)s+=km(p[i-1],p[i]);return s;}
+function optimize(st,pts){
+  if(!pts.length) return [];
+  // nearest neighbour
+  const left=pts.slice(), path=[st];
+  while(left.length){const cur=path[path.length-1];let bi=0,bd=1e9;
+    left.forEach((p,i)=>{const d=km(cur,p);if(d<bd){bd=d;bi=i;}});path.push(left.splice(bi,1)[0]);}
+  // 2-opt (open path, start fixed)
+  let improved=true,guard=0;
+  while(improved&&guard++<200){improved=false;
+    for(let i=1;i<path.length-1;i++){for(let k=i+1;k<path.length;k++){
+      const a=path[i-1],b=path[i],c=path[k],d=path[k+1];
+      const before=km(a,b)+(d?km(c,d):0), after=km(a,c)+(d?km(b,d):0);
+      if(after+1e-9<before){path.splice(i,k-i+1,...path.slice(i,k+1).reverse());improved=true;}
+    }}}
+  return path.slice(1);
+}
+
+
+/* ---------- helpers ---------- */
+const $=id=>document.getElementById(id);
+const toastEl=$("toast");let tt;
+function toast(m){toastEl.textContent=m;toastEl.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>toastEl.classList.remove("show"),2000);}
+const ll=p=>p.lat.toFixed(6)+","+p.lng.toFixed(6);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- sheet & pick ---------- */
+function openSheet(){$("sheet").classList.add("open");document.body.classList.add("lock");}
+function closeSheet(){$("sheet").classList.remove("open");document.body.classList.remove("lock");}
+$("openSet").onclick=openSheet;$("condBtn").onclick=openSheet;
+$("closeSet").onclick=()=>{closeSheet();window.scrollTo({top:0,behavior:"smooth"});};
+let picking=false;
+function setPick(on){picking=on;$("pickBanner").classList.toggle("show",on);if(on){closeSheet();setTimeout(()=>$("map").scrollIntoView({behavior:"smooth",block:"center"}),280);}}
+$("pickBtn").onclick=()=>setPick(true);$("pickCancel").onclick=()=>setPick(false);
+
+/* ---------- start ---------- */
+const preset=$("preset");
+PRESETS.forEach((p,i)=>{const o=document.createElement("option");o.value=i;o.textContent=p.name;preset.appendChild(o);});
+const custom=document.createElement("option");custom.value="custom";custom.textContent="(現在地・住所・地図で指定した位置)";preset.appendChild(custom);
+function syncPreset(){const i=PRESETS.findIndex(p=>p.lat===start.lat&&p.lng===start.lng);preset.value=i>=0?String(i):"custom";
+  $("startNow").textContent="今の出発地点:"+start.name;}
+preset.onchange=()=>{if(preset.value==="custom")return;const p=PRESETS[+preset.value];setStart({name:p.name,lat:p.lat,lng:p.lng});closeSheet();};
+function setStart(s,keepAddr){start=s;store.start=s;if(!keepAddr){store.addr="";}save();syncPreset();render(true);}
+
+function useHere(){
+  if(!navigator.geolocation){toast("このブラウザは位置情報に対応していません");return;}
+  toast("現在地を取得しています…");
+  navigator.geolocation.getCurrentPosition(pos=>{
+    setStart({name:"現在地",lat:pos.coords.latitude,lng:pos.coords.longitude});closeSheet();toast("現在地から組み直しました");
+  },err=>{toast(err.code===1?"位置情報の利用が許可されていません(ブラウザの設定を確認)":"現在地を取得できませんでした");},{enableHighAccuracy:true,timeout:15000,maximumAge:30000});
+}
+$("hereBtn").onclick=useHere;$("hereTop").onclick=useHere;$("hereMap").onclick=useHere;
+
+// 住所検索(国土地理院 地名検索API)
+$("addr").value=store.addr||"";
+async function searchAddr(){
+  const q=$("addr").value.trim();const box=$("addrRes");box.innerHTML="";
+  if(!q)return;
+  try{
+    const r=await fetch("https://msearch.gsi.go.jp/address-search/AddressSearch?q="+encodeURIComponent(q));
+    const js=await r.json();
+    if(!js.length){box.innerHTML='<p class="muted">見つかりませんでした。町名までで試してください。</p>';return;}
+    js.slice(0,6).forEach(it=>{const [lng,lat]=it.geometry.coordinates;const b=document.createElement("button");b.textContent=it.properties.title;
+      b.onclick=()=>{store.addr=q;setStart({name:it.properties.title,lat,lng},true);box.innerHTML="";closeSheet();toast("出発地点を設定しました");};box.appendChild(b);});
+  }catch(e){box.innerHTML='<p class="muted">検索できませんでした。通信状況を確認してください。</p>';}
+}
+$("addrGo").onclick=searchAddr;$("addr").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();searchAddr();}};
+
+/* ---------- categories / filters ---------- */
+const catsEl=$("cats");
+Object.entries(CATS).forEach(([k,c])=>{
+  const n=PLACES.filter(p=>p.cat===k).length;
+  const l=document.createElement("label");l.className="chip";
+  l.innerHTML=`<input type="checkbox" value="${k}"><span class="dot" style="background:${c.color}"></span>${c.label}<span class="n">${n}</span>`;
+  const cb=l.querySelector("input");cb.checked=store.cats.includes(k);
+  cb.onchange=()=>{store.cats=[...catsEl.querySelectorAll("input:checked")].map(x=>x.value);save();render(true);};
+  catsEl.appendChild(l);
+});
+$("allOn").onclick=()=>{catsEl.querySelectorAll("input").forEach(x=>x.checked=true);store.cats=Object.keys(CATS);save();render(true);};
+$("allOff").onclick=()=>{catsEl.querySelectorAll("input").forEach(x=>x.checked=false);store.cats=[];save();render(true);};
+function seg(id,key,after){const box=$(id);const sync=()=>box.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.v===store[key]));
+  box.querySelectorAll("button").forEach(b=>b.onclick=()=>{store[key]=b.dataset.v;save();sync();after();});sync();}
+seg("radiusSeg","radius",()=>render(true));
+seg("modeSeg","mode",()=>renderRoute());
+$("skipDone").checked=store.skipDone;$("skipDone").onchange=e=>{store.skipDone=e.target.checked;save();render();};
+
+const NEAR=["税理士","会計事務所","社会保険労務士","行政書士","司法書士","土地家屋調査士","不動産会社","保険代理店","工務店","建設会社","介護事業所","歯科医院","クリニック","法律事務所","設計事務所","運送会社","卸売","人材派遣","広告代理店","自動車整備"];
+NEAR.forEach(w=>{const a=document.createElement("a");a.target="_blank";a.rel="noopener";a.textContent="近くの"+w;
+  a.href="https://www.google.com/maps/search/"+encodeURIComponent(w);$("near").appendChild(a);});
+
+/* ---------- route ---------- */
+let route=[],visible=[];
+function compute(){
+  const r=parseFloat(store.radius);
+  visible=PLACES.filter(p=>store.cats.includes(p.cat)&&km(start,p)<=r);
+  route=optimize(start,visible.filter(p=>!(store.skipDone&&store.done[p.id])));
+}
+const SPEED={walking:4.5,bicycling:12,driving:22},ROAD=1.3,CH=9;
+function renderRoute(){
+  const mode=store.mode;
+  const dist=pathLen([start,...route])*ROAD;
+  $("sCount").textContent=route.length;$("sKm").textContent=dist.toFixed(1);$("sMin").textContent=Math.round(dist/SPEED[mode]*60);
+  const legs=$("legs");legs.innerHTML="";
+  const anyDone=visible.some(p=>store.done[p.id]);
+  const fromHere=start.name==="現在地"||anyDone;
+  if(route.length){
+    const chunk=route.slice(0,CH),dest=chunk[chunk.length-1];
+    let u="https://www.google.com/maps/dir/?api=1"+(fromHere?"":"&origin="+encodeURIComponent(ll(start)))+"&destination="+encodeURIComponent(ll(dest))+"&travelmode="+mode;
+    if(chunk.length>1)u+="&waypoints="+chunk.slice(0,-1).map(p=>encodeURIComponent(ll(p))).join("%7C");
+    const a=document.createElement("a");a.className="navbtn";a.target="_blank";a.rel="noopener";a.href=u;
+    a.textContent=route.length>CH?`▶ ナビ開始(次の${CH}件)`:`▶ ナビ開始(残り${route.length}件)`;legs.appendChild(a);
+  }
+  const radTxt={"0.8":"800m","1.5":"1.5km","3":"3km","6":"6km","99":"無制限"}[store.radius];
+  const modeTxt={walking:"徒歩",bicycling:"自転車",driving:"車"}[mode];
+  $("condTxt").innerHTML=`出発 <b>${esc(start.name)}</b>・業種 <b>${store.cats.length}</b>・<b>${radTxt}</b>・<b>${modeTxt}</b>`;
+  $("legNote").textContent=!route.length?(visible.length?"選んだ範囲はすべて配布済みです。":"条件に当てはまる配布先がありません。業種か距離を広げてください。")
+    :(route.length>CH?"配布済みにチェックすると、ボタンが次の未配布へ進みます。":"")+(fromHere?" 現在地から案内します。":"");
+  const ol=$("stops");ol.innerHTML="";ol.style.display=visible.length?"":"none";
+  const rest=visible.filter(p=>!route.includes(p));
+  [...route.map((p,k)=>({p,k:k+1})),...rest.map(p=>({p,k:null}))].forEach(({p,k})=>{
+    const c=CATS[p.cat],done=!!store.done[p.id],memo=store.memo[p.id]||"",tel=p.tel.replace(/[^0-9]/g,"");
+    const li=document.createElement("li");li.id="li-"+p.id;if(done)li.classList.add("done");
+    li.innerHTML=`<div class="num" style="background:${k?c.color:'#9a9890'}">${k||"済"}</div>
+      <div><div class="nm">${esc(p.name)}</div>
+      <div class="meta">${c.label}・${km(start,p).toFixed(1)}km${done?`・配布 ${store.done[p.id]}`:""}</div>
+      <div class="meta">${esc(p.addr)}</div>
+      ${memo?`<div class="memotxt">📝 ${esc(memo)}</div>`:""}
+      <div class="acts">
+        <a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${ll(p)}&travelmode=${store.mode}">ここへナビ</a>
+        <a target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(p.name+" 岐阜")}">HP検索</a>
+        ${p.tel?`<a href="tel:${tel}">☎ ${p.tel}</a>`:""}
+        <button class="mb">メモ</button>
+      </div>
+      <input class="memo" placeholder="例:受付に手渡し、不在など" value="${esc(memo)}"></div>
+      <label class="check"><input type="checkbox" ${done?"checked":""}>配布済</label>`;
+    li.querySelector(".check input").onchange=e=>{
+      if(e.target.checked){const d=new Date();store.done[p.id]=`${d.getMonth()+1}/${d.getDate()}`;}else delete store.done[p.id];
+      save();render();toast(e.target.checked?"配布済みにしました":"未配布に戻しました");};
+    const mi=li.querySelector(".memo");
+    li.querySelector(".mb").onclick=()=>{mi.classList.toggle("show");if(mi.classList.contains("show"))mi.focus();};
+    mi.onchange=e=>{store.memo[p.id]=e.target.value;save();renderRoute();toast("メモを保存しました");};
+    ol.appendChild(li);
+  });
+}
+
+/* ---------- map (Leaflet + 国土地理院) ---------- */
+const map=L.map("map",{zoomControl:true,attributionControl:true}).setView([start.lat,start.lng],15);
+L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",{maxZoom:18,attribution:'<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院</a>'}).addTo(map);
+const layer=L.layerGroup().addTo(map);
+function drawMap(){
+  layer.clearLayers();
+  if(route.length)L.polyline([start,...route].map(p=>[p.lat,p.lng]),{color:"#1d1d1b",weight:3,opacity:.5,dashArray:"6 6"}).addTo(layer);
+  visible.filter(p=>!route.includes(p)).forEach(p=>addPin(p,"済",true));
+  route.forEach((p,i)=>addPin(p,i+1,false));
+  L.marker([start.lat,start.lng],{icon:L.divIcon({className:"",html:'<div class="pin start">出</div>',iconSize:[32,32],iconAnchor:[16,16]}),zIndexOffset:1000}).addTo(layer);
+}
+function addPin(p,label,done){
+  const c=CATS[p.cat];
+  const m=L.marker([p.lat,p.lng],{icon:L.divIcon({className:"",html:`<div class="pin ${done?"done":""}" style="background:${c.color}">${label}</div>`,iconSize:done?[20,20]:[28,28],iconAnchor:done?[10,10]:[14,14]})}).addTo(layer);
+  m.bindPopup(`<b>${esc(p.name)}</b><br>${c.label}<br><a href="#li-${p.id}">リストで見る</a>`);
+  m.on("click",()=>{const li=$("li-"+p.id);if(li){li.style.background="color-mix(in srgb, var(--accent) 12%, transparent)";setTimeout(()=>li.style.background="",1800);}});
+}
+map.on("click",e=>{if(!picking)return;setPick(false);setStart({name:"地図で指定した位置",lat:e.latlng.lat,lng:e.latlng.lng});toast("出発地点を設定しました");});
+function fit(){map.invalidateSize();const pts=[start,...(route.length?route:visible)].map(p=>[p.lat,p.lng]);
+  if(pts.length>1)map.fitBounds(pts,{padding:[30,30],maxZoom:17});else map.setView(pts[0],16);}
+
+/* ---------- records ---------- */
+$("exportBtn").onclick=async()=>{const txt=JSON.stringify({done:store.done,memo:store.memo});const io=$("io");io.style.display="block";io.value=txt;
+  try{await navigator.clipboard.writeText(txt);toast("記録をコピーしました");}catch(e){io.select();toast("下の文字を長押しでコピーしてください");}};
+$("importBtn").onclick=()=>{const io=$("io");if(io.style.display==="none"||!io.value.trim()){io.style.display="block";io.value="";io.focus();toast("記録を貼り付けて、もう一度押してください");return;}
+  try{const d=JSON.parse(io.value);store.done=d.done||{};store.memo=d.memo||{};save();render();toast("記録を読み込みました");io.style.display="none";}catch(e){toast("読み込めませんでした");}};
+let resetArm=false;
+$("resetBtn").onclick=()=>{if(!resetArm){resetArm=true;$("resetBtn").textContent="もう一度押すと全部外します";setTimeout(()=>{resetArm=false;$("resetBtn").textContent="チェックを全部外す";},3000);return;}
+  store.done={};save();render();resetArm=false;$("resetBtn").textContent="チェックを全部外す";toast("チェックを外しました");};
+
+function render(refit){compute();renderRoute();drawMap();if(refit)fit();}
+syncPreset();render(true);
+</script>
+</body>
+</html>
