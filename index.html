@@ -51,6 +51,30 @@ button{font:inherit;color:inherit;cursor:pointer}
 .leaflet-popup-content{font-family:inherit;font-size:13px;margin:10px 12px}
 .sechead{display:flex;justify-content:space-between;align-items:baseline;margin:4px 2px 8px}
 .sechead h2{font-size:15px;margin:0;font-weight:800}
+.sechead h2 span{font-size:12px;color:var(--sub);font-weight:400;margin-left:4px}
+.hbtns{display:flex;gap:6px}
+.pill.sm{min-height:36px;padding:6px 12px;font-size:13px}
+.pill.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.manual{display:none;align-items:center;justify-content:space-between;gap:8px;background:var(--accent-soft);border-radius:12px;padding:8px 12px;font-size:13px;margin-bottom:10px}
+.manual.show{display:flex}
+.manual button{border:none;background:var(--card);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700;min-height:32px}
+.item.compact{grid-template-columns:30px 1fr auto;align-items:center;padding:8px 10px}
+.mv{display:flex;gap:6px}
+.mv button{width:44px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:16px}
+.mv button:disabled{opacity:.3}
+.tag{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin-left:4px;vertical-align:2px}
+.skipbox{margin-top:16px}
+.skipbox h3{font-size:13px;color:var(--sub);margin:0 2px 6px}
+/* add sheet */
+.sheet{position:fixed;inset:0;z-index:2500;background:var(--bg);overflow-y:auto;transform:translateY(100%);transition:transform .25s ease;visibility:hidden}
+.sheet.open{transform:none;visibility:visible}
+.sheet .inner{max-width:540px;margin:0 auto;padding:12px 14px 40px}
+.addrow{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:center;margin-bottom:6px}
+.addrow .nm{font-size:14px}
+.addbtn{border:1px solid var(--accent);color:var(--accent);background:var(--card);border-radius:999px;padding:6px 12px;font-weight:700;font-size:13px;min-height:36px}
+.addbtn.added{background:var(--accent);color:var(--accent-ink)}
+.delbtn{border:none;background:none;color:var(--sub);font-size:12px;text-decoration:underline;padding:4px}
+.locline{font-size:13px;margin:6px 0 0}
 .sechead span{font-size:12px;color:var(--sub)}
 .list{display:grid;gap:10px}
 .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:start;transition:background .3s}
@@ -129,9 +153,11 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;min-height:32px}
     <p class="note" id="note"></p>
   </div>
   <div class="mapwrap"><div id="map"></div></div>
-  <div class="sechead"><h2>回る順番</h2><span id="listInfo"></span></div>
+  <div class="sechead"><h2>回る順番<span id="listInfo"></span></h2><div class="hbtns"><button class="pill sm" id="sortBtn">↕ 並べ替え</button><button class="pill sm" id="addBtn">＋ 追加</button></div></div>
+  <div class="manual" id="manualNote"><span>手動で並べた順番です</span><button id="autoBtn">自動の順番に戻す</button></div>
   <div class="list" id="stops"></div>
   <p class="more" id="more"></p>
+  <div class="skipbox" id="skipBox"></div>
 </section>
 
 <!-- ===== 配布済み ===== -->
@@ -188,6 +214,29 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;min-height:32px}
   </details>
 </section>
 
+<div class="sheet" id="addSheet">
+  <div class="top"><h1>配布先を追加</h1><button class="pill" id="addClose">閉じる</button></div>
+  <div class="inner">
+    <div class="seg" id="addTab" style="grid-template-columns:1fr 1fr;margin-bottom:12px"><button data-v="list" class="on">近くの未配布から</button><button data-v="new">新しく登録</button></div>
+    <div id="addList">
+      <p class="muted" style="margin-top:0">業種・距離・件数の設定に関係なく、今日のルートに入れられます。出発地点から近い順です。</p>
+      <div id="addItems"></div>
+    </div>
+    <div id="addNew" style="display:none">
+      <div class="sec">
+        <p class="muted" style="margin-top:0">リストにない事業所を見つけたときに登録します。登録した先は次回以降もリストに残ります。</p>
+        <label class="f" for="nName">名前</label><input type="text" id="nName" placeholder="例:〇〇税理士事務所">
+        <label class="f" for="nCat">業種</label><select id="nCat"></select>
+        <label class="f" for="nTel">電話(なくても可)</label><input type="text" id="nTel" inputmode="tel" placeholder="058-000-0000">
+        <label class="f">場所</label>
+        <div class="row"><button class="btn" id="nHere">📍 現在地</button><button class="btn" id="nPick">地図をタップ</button></div>
+        <p class="locline" id="nLoc">場所:まだ決まっていません</p>
+        <label class="toggle" style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14px"><input type="checkbox" id="nDone" style="width:22px;height:22px">今ここで配った(配布済みにする)</label>
+        <button class="btn primary" id="nSave" style="width:100%;margin-top:14px">登録する</button>
+      </div>
+    </div>
+  </div>
+</div>
 <nav class="tabs">
   <button data-v="vRoute" class="on"><span class="ic">🗺️</span>ルート</button>
   <button data-v="vDone"><span class="ic">✅</span>配布済み<span class="badge" id="tabBadge" style="display:none"></span></button>
@@ -356,6 +405,11 @@ const WD="日月火水木金土";
 const dLabel=iso=>{const d=new Date(iso+"T00:00:00");return isNaN(d)?iso:`${d.getMonth()+1}/${d.getDate()}(${WD[d.getDay()]})`;};
 // 旧形式(M/D)の日付を変換
 Object.keys(store.done).forEach(k=>{const v=store.done[k];const m=/^(\d+)\/(\d+)$/.exec(v);if(m)store.done[k]=`${new Date().getFullYear()}-${pad(m[1])}-${pad(m[2])}`;});
+store.skip=store.skip||{};store.extra=store.extra||{};store.custom=Array.isArray(store.custom)?store.custom:[];if(!Array.isArray(store.manual))store.manual=null;
+// 古い日付のスキップ・追加は自動で消す
+["skip","extra"].forEach(k=>Object.keys(store[k]).forEach(id=>{if(store[k][id]!==today())delete store[k][id];}));
+const ALL=()=>PLACES.concat(store.custom);
+const byId=id=>ALL().find(p=>p.id===id);
 let toastT,toastFn=null;
 function toast(msg,actLabel,fn){$("toastMsg").textContent=msg;const b=$("toastAct");
   if(actLabel){b.textContent=actLabel;b.style.display="";toastFn=fn;}else{b.style.display="none";toastFn=null;}
@@ -375,14 +429,15 @@ document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>show(b.datase
 
 /* ---------- start ---------- */
 let picking=false;
-function setPick(on){picking=on;$("pickBanner").classList.toggle("show",on);if(on){show("vRoute");}}
+let pickCb=null;
+function setPick(on,cb,msg){picking=on;pickCb=on?(cb||null):null;$("pickBanner").querySelector("span").textContent=msg||"地図をタップして出発地点を選んでください";$("pickBanner").classList.toggle("show",on);if(on){closeAdd(true);show("vRoute");setTimeout(()=>$("map").scrollIntoView({behavior:"smooth",block:"center"}),100);}}
 $("pickBtn").onclick=()=>setPick(true);$("pickCancel").onclick=()=>setPick(false);
 const preset=$("preset");
 PRESETS.forEach((p,i)=>{const o=document.createElement("option");o.value=i;o.textContent=p.name;preset.appendChild(o);});
 const custom=document.createElement("option");custom.value="custom";custom.textContent="(現在地・住所・地図で指定)";preset.appendChild(custom);
 function syncPreset(){const i=PRESETS.findIndex(p=>p.lat===start.lat&&p.lng===start.lng);preset.value=i>=0?String(i):"custom";$("startNow").textContent="今の出発地点:"+start.name;}
 preset.onchange=()=>{if(preset.value==="custom")return;const p=PRESETS[+preset.value];setStart({name:p.name,lat:p.lat,lng:p.lng});show("vRoute");};
-function setStart(s){start=s;store.start=s;save();syncPreset();render(true);}
+function setStart(s){start=s;store.start=s;store.manual=null;save();syncPreset();render(true);}
 function useHere(){
   if(!navigator.geolocation){toast("このブラウザは位置情報に対応していません");return;}
   toast("現在地を取得しています…");
@@ -420,21 +475,33 @@ seg("radiusSeg","radius",()=>render(true));seg("modeSeg","mode",()=>render());se
   const a=document.createElement("a");a.target="_blank";a.rel="noopener";a.textContent="近くの"+w;a.href="https://www.google.com/maps/search/"+encodeURIComponent(w);$("near").appendChild(a);});
 
 /* ---------- route ---------- */
-let route=[],visible=[],undone=[];
+let route=[],visible=[],undone=[],skippedList=[],sorting=false;
 function compute(){
   const r=parseFloat(store.radius);
-  visible=PLACES.filter(p=>store.cats.includes(p.cat)&&km(start,p)<=r);
-  undone=visible.filter(p=>!store.done[p.id]);
+  const T=today();
+  const skipped=p=>store.skip[p.id]===T;
+  visible=ALL().filter(p=>store.cats.includes(p.cat)&&km(start,p)<=r);
+  undone=visible.filter(p=>!store.done[p.id]&&!skipped(p));
   let cand=undone;
   const lim=store.limit==="all"?Infinity:parseInt(store.limit,10);
   if(cand.length>lim)cand=cand.slice().sort((a,b)=>km(start,a)-km(start,b)).slice(0,lim);
-  route=optimize(start,cand);
+  ALL().forEach(p=>{if(store.extra[p.id]===T&&!store.done[p.id]&&!skipped(p)&&!cand.includes(p))cand=cand.concat([p]);});
+  if(store.manual){
+    const ordered=store.manual.map(byId).filter(p=>p&&cand.includes(p));
+    cand.filter(p=>!ordered.includes(p)).forEach(p=>{ // いちばん遠回りにならない位置に差し込む
+      let best=ordered.length,bc=Infinity;const path=[start,...ordered];
+      for(let i=1;i<=path.length;i++){const a=path[i-1],b=path[i];const c=km(a,p)+(b?km(p,b)-km(a,b):0);if(c<bc){bc=c;best=i-1;}}
+      ordered.splice(best,0,p);});
+    route=ordered;
+  }else route=optimize(start,cand);
+  skippedList=ALL().filter(p=>skipped(p)&&!store.done[p.id]);
 }
 const SPEED={walking:4.5,bicycling:12,driving:22},ROAD=1.3,CH=9;
 const RAD={"0.8":"800m","1.5":"1.5km","3":"3km","6":"6km","99":"距離無制限"};
 const MODE={walking:"🚶 徒歩",bicycling:"🚲 自転車",driving:"🚗 車"};
 function markDone(p){store.done[p.id]=today();save();render();
   toast(`「${p.name.slice(0,12)}${p.name.length>12?"…":""}」を配布済みに`,"元に戻す",()=>{delete store.done[p.id];save();render();});}
+function move(i,d){const ids=route.map(p=>p.id);const j=i+d;if(j<0||j>=ids.length)return;[ids[i],ids[j]]=[ids[j],ids[i]];store.manual=ids;save();render();}
 function renderRoute(){
   const mode=store.mode;
   const cond=$("cond");cond.innerHTML="";
@@ -456,28 +523,49 @@ function renderRoute(){
   const box=$("stops");box.innerHTML="";
   if(!route.length){box.innerHTML='<div class="empty">今回のルートはありません</div>';}
   route.forEach((p,i)=>{
-    const c=CATS[p.cat],memo=store.memo[p.id]||"",tel=p.tel.replace(/[^0-9]/g,"");
-    const el=document.createElement("div");el.className="item";el.id="it-"+p.id;
+    const c=CATS[p.cat],memo=store.memo[p.id]||"",tel=(p.tel||"").replace(/[^0-9]/g,"");
+    const el=document.createElement("div");el.id="it-"+p.id;
+    const tags=(p.custom?'<span class="tag">登録</span>':"")+(store.extra[p.id]===today()?'<span class="tag">追加</span>':"");
+    if(sorting){
+      el.className="item compact";
+      el.innerHTML=`<div class="num" style="background:${c.color}">${i+1}</div><div><div class="nm">${esc(p.name)}${tags}</div><div class="meta">${c.label}</div></div>
+        <div class="mv"><button class="up" ${i===0?"disabled":""}>↑</button><button class="dn" ${i===route.length-1?"disabled":""}>↓</button></div>`;
+      el.querySelector(".up").onclick=()=>move(i,-1);el.querySelector(".dn").onclick=()=>move(i,1);
+      box.appendChild(el);return;
+    }
+    el.className="item";
     el.innerHTML=`<div class="num" style="background:${c.color}">${i+1}</div>
-      <div><div class="nm">${esc(p.name)}</div>
+      <div><div class="nm">${esc(p.name)}${tags}</div>
       <div class="meta">${c.label}・${km(start,p).toFixed(1)}km</div>
-      <div class="meta">${esc(p.addr)}</div>
+      <div class="meta">${esc(p.addr||"")}</div>
 </div>
       <button class="donebtn" aria-label="配布した"><span class="ck">✓</span>配布した</button>
       <div class="foot">${memo?`<div class="memotxt">📝 ${esc(memo)}</div>`:""}
       <div class="acts">
         <a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${ll(p)}&travelmode=${mode}">🧭 ナビ</a>
-        ${p.tel?`<a href="tel:${tel}">📞 電話</a>`:""}
+        ${tel?`<a href="tel:${tel}">📞 電話</a>`:""}
         <a target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(p.name+" 岐阜")}">🔎 HP</a>
         <button class="mb">📝 メモ</button>
+        <button class="sk">⏭ スキップ</button>
       </div>
       <input class="memo" placeholder="例:受付に手渡し、不在など" value="${esc(memo)}"></div>`;
     el.querySelector(".donebtn").onclick=()=>markDone(p);
+    el.querySelector(".sk").onclick=()=>{store.skip[p.id]=today();save();render();toast("今日はスキップしました","元に戻す",()=>{delete store.skip[p.id];save();render();});};
     const mi=el.querySelector(".memo");
     el.querySelector(".mb").onclick=()=>{mi.classList.toggle("show");if(mi.classList.contains("show"))mi.focus();};
     mi.onchange=e=>{store.memo[p.id]=e.target.value;save();renderRoute();toast("メモを保存しました");};
     box.appendChild(el);
   });
+  $("sortBtn").classList.toggle("on",sorting);$("sortBtn").textContent=sorting?"✓ 完了":"↕ 並べ替え";
+  $("sortBtn").style.display=route.length>1||sorting?"":"none";
+  $("manualNote").classList.toggle("show",!!store.manual);
+  const sb=$("skipBox");sb.innerHTML="";
+  if(skippedList.length){
+    sb.innerHTML=`<h3>今日スキップ中・${skippedList.length}件</h3>`;
+    skippedList.forEach(p=>{const c=CATS[p.cat];const r=document.createElement("div");r.className="ditem";
+      r.innerHTML=`<span class="dot" style="background:${c.color}"></span><div><div class="nm">${esc(p.name)}</div><div class="meta">${c.label}</div></div><button class="undo">ルートに戻す</button>`;
+      r.querySelector(".undo").onclick=()=>{delete store.skip[p.id];save();render();toast("ルートに戻しました");};sb.appendChild(r);});
+  }
   const extra=undone.length-route.length;
   $("more").textContent=extra>0?`この範囲には、ほかに未配布が${extra}件あります(設定の「配る件数」で増やせます)`:"";
   const n=Object.keys(store.done).length;const bd=$("tabBadge");bd.style.display=n?"":"none";bd.textContent=n;
@@ -485,18 +573,18 @@ function renderRoute(){
 
 /* ---------- done page ---------- */
 function renderDone(){
-  const ids=Object.keys(store.done).filter(id=>PLACES.some(p=>p.id===id));
+  const ids=Object.keys(store.done).filter(id=>byId(id));
   $("dTotal").textContent=ids.length;
   $("dToday").textContent=ids.filter(id=>store.done[id]===today()).length;
-  $("dLeft").textContent=PLACES.length-ids.length;
+  $("dLeft").textContent=ALL().length-ids.length;
   const box=$("doneList");box.innerHTML="";
   if(!ids.length){box.innerHTML='<div class="empty">まだ配布済みはありません。<br>ルートの「配布した」を押すとここに入ります。</div>';return;}
-  const groups={};ids.forEach(id=>{(groups[store.done[id]]=groups[store.done[id]]||[]).push(PLACES.find(p=>p.id===id));});
+  const groups={};ids.forEach(id=>{(groups[store.done[id]]=groups[store.done[id]]||[]).push(byId(id));});
   Object.keys(groups).sort().reverse().forEach(d=>{
     const g=document.createElement("div");g.className="dgroup";
     g.innerHTML=`<h3>${dLabel(d)}${d===today()?" 今日":""}・${groups[d].length}件</h3>`;
     groups[d].sort((a,b)=>a.cat.localeCompare(b.cat)).forEach(p=>{
-      const c=CATS[p.cat],memo=store.memo[p.id]||"",tel=p.tel.replace(/[^0-9]/g,"");
+      const c=CATS[p.cat],memo=store.memo[p.id]||"",tel=(p.tel||"").replace(/[^0-9]/g,"");
       const it=document.createElement("div");it.className="ditem";
       it.innerHTML=`<span class="dot" style="background:${c.color}"></span>
         <div><div class="nm">${esc(p.name)}</div><div class="meta">${c.label}${p.tel?`・<a href="tel:${tel}">${p.tel}</a>`:""}</div>${memo?`<div class="memotxt">📝 ${esc(memo)}</div>`:""}</div>
@@ -507,6 +595,41 @@ function renderDone(){
     box.appendChild(g);
   });
 }
+
+/* ---------- sort / add ---------- */
+$("sortBtn").onclick=()=>{sorting=!sorting;renderRoute();};
+$("autoBtn").onclick=()=>{const prev=store.manual;store.manual=null;save();render();toast("自動の順番に戻しました","取り消し",()=>{store.manual=prev;save();render();});};
+const nCat=$("nCat");Object.entries(CATS).forEach(([k,c])=>{const o=document.createElement("option");o.value=k;o.textContent=c.label;nCat.appendChild(o);});
+let nLoc=null;
+function openAdd(){$("addSheet").classList.add("open");document.body.style.overflow="hidden";renderAddList();}
+function closeAdd(keep){$("addSheet").classList.remove("open");document.body.style.overflow="";}
+$("addBtn").onclick=openAdd;$("addClose").onclick=()=>closeAdd();
+$("addTab").querySelectorAll("button").forEach(b=>b.onclick=()=>{$("addTab").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  $("addList").style.display=b.dataset.v==="list"?"":"none";$("addNew").style.display=b.dataset.v==="new"?"":"none";});
+function renderAddList(){
+  const box=$("addItems");box.innerHTML="";
+  const list=ALL().filter(p=>!store.done[p.id]&&!route.includes(p)).sort((a,b)=>km(start,a)-km(start,b)).slice(0,40);
+  if(!list.length){box.innerHTML='<div class="empty">追加できる未配布の先はありません</div>';return;}
+  list.forEach(p=>{const c=CATS[p.cat];const r=document.createElement("div");r.className="addrow";
+    const sk=store.skip[p.id]===today();
+    r.innerHTML=`<span class="dot" style="background:${c.color}"></span><div><div class="nm">${esc(p.name)}${p.custom?'<span class="tag">登録</span>':""}</div><div class="meta">${c.label}・${km(start,p).toFixed(1)}km${sk?"・スキップ中":""}${p.custom?' <button class="delbtn">削除</button>':""}</div></div><button class="addbtn">＋ 追加</button>`;
+    r.querySelector(".addbtn").onclick=e=>{delete store.skip[p.id];store.extra[p.id]=today();save();render();e.target.textContent="✓ 追加済";e.target.classList.add("added");e.target.disabled=true;toast("ルートに追加しました");};
+    const del=r.querySelector(".delbtn");if(del)del.onclick=()=>{store.custom=store.custom.filter(x=>x.id!==p.id);delete store.extra[p.id];if(store.manual)store.manual=store.manual.filter(x=>x!==p.id);save();render();renderAddList();toast("登録を削除しました");};
+    box.appendChild(r);});
+}
+function setNLoc(lat,lng,label){nLoc={lat,lng};$("nLoc").textContent=`場所:${label}(${lat.toFixed(5)}, ${lng.toFixed(5)})`;}
+$("nHere").onclick=()=>{if(!navigator.geolocation){toast("位置情報に対応していません");return;}toast("現在地を取得しています…");
+  navigator.geolocation.getCurrentPosition(pos=>{setNLoc(pos.coords.latitude,pos.coords.longitude,"現在地");toast("場所を現在地にしました");},
+    err=>toast(err.code===1?"位置情報が許可されていません":"現在地を取得できませんでした"),{enableHighAccuracy:true,timeout:15000});};
+$("nPick").onclick=()=>setPick(true,ll=>{setNLoc(ll.lat,ll.lng,"地図で指定");openAdd();$("addTab").querySelector('[data-v="new"]').click();},"地図をタップして事業所の場所を選んでください");
+$("nSave").onclick=()=>{
+  const name=$("nName").value.trim();if(!name){toast("名前を入れてください");return;}
+  if(!nLoc){toast("場所を決めてください");return;}
+  const p={id:"u"+Date.now().toString(36),cat:nCat.value,name,addr:"",tel:$("nTel").value.trim(),lat:nLoc.lat,lng:nLoc.lng,custom:true};
+  store.custom.push(p);const didDone=$("nDone").checked;
+  if(didDone)store.done[p.id]=today();else store.extra[p.id]=today();
+  save();render();$("nName").value="";$("nTel").value="";$("nDone").checked=false;nLoc=null;$("nLoc").textContent="場所:まだ決まっていません";
+  closeAdd();toast(didDone?"登録して配布済みにしました":"登録してルートに追加しました");};
 
 /* ---------- map ---------- */
 const map=L.map("map",{zoomControl:false,attributionControl:true}).setView([start.lat,start.lng],15);
@@ -523,7 +646,7 @@ function drawMap(){
     m.on("click",()=>{const el=$("it-"+p.id);if(el){el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1600);}});});
   L.marker([start.lat,start.lng],{icon:L.divIcon({className:"",html:'<div class="pin start">出</div>',iconSize:[34,34],iconAnchor:[17,17]}),zIndexOffset:1000}).addTo(layer);
 }
-map.on("click",e=>{if(!picking)return;setPick(false);setStart({name:"地図で指定した位置",lat:e.latlng.lat,lng:e.latlng.lng});toast("出発地点を設定しました");});
+map.on("click",e=>{if(!picking)return;if(pickCb){const cb=pickCb;setPick(false);cb(e.latlng);return;}setPick(false);setStart({name:"地図で指定した位置",lat:e.latlng.lat,lng:e.latlng.lng});toast("出発地点を設定しました");});
 function fit(){map.invalidateSize();const pts=[start,...(route.length?route:visible)].map(p=>[p.lat,p.lng]);
   if(pts.length>1)map.fitBounds(pts,{padding:[30,30],maxZoom:17});else map.setView(pts[0],16);}
 
