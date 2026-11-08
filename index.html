@@ -10,6 +10,7 @@
 <title>配布ルート</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
 <style>
 :root{--bg:#f6f5f1;--card:#ffffff;--ink:#1d1d1b;--sub:#6b6a66;--line:#e6e4dd;--accent:#1f5f8b;--accent-soft:#e3eef6;--accent-ink:#ffffff;--ok:#2e7d4f;--ok-soft:#e4f2e9;--warn:#b5541c;
   --safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);--tabh:62px}
@@ -59,6 +60,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .manual.show{display:flex}
 .manual button{border:none;background:var(--card);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700;min-height:32px}
 .item.compact{grid-template-columns:30px 1fr auto;align-items:center;padding:8px 10px}
+.handle{width:48px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--sub);touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.drag-ghost{opacity:.35}
+.drag-chosen{box-shadow:0 8px 20px rgba(0,0,0,.18);transform:scale(1.02)}
+.sorthint{font-size:12px;color:var(--sub);margin:0 2px 8px}
 .mv{display:flex;gap:6px}
 .mv button{width:44px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:16px}
 .mv button:disabled{opacity:.3}
@@ -154,6 +159,7 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;min-height:32px}
   </div>
   <div class="mapwrap"><div id="map"></div></div>
   <div class="sechead"><h2>回る順番<span id="listInfo"></span></h2><div class="hbtns"><button class="pill sm" id="sortBtn">↕ 並べ替え</button><button class="pill sm" id="addBtn">＋ 追加</button></div></div>
+  <p class="sorthint" id="sortHint" style="display:none">右の ≡ をつかんで上下にドラッグすると順番を入れ替えられます。</p>
   <div class="manual" id="manualNote"><span>手動で並べた順番です</span><button id="autoBtn">自動の順番に戻す</button></div>
   <div class="list" id="stops"></div>
   <p class="more" id="more"></p>
@@ -475,7 +481,7 @@ seg("radiusSeg","radius",()=>render(true));seg("modeSeg","mode",()=>render());se
   const a=document.createElement("a");a.target="_blank";a.rel="noopener";a.textContent="近くの"+w;a.href="https://www.google.com/maps/search/"+encodeURIComponent(w);$("near").appendChild(a);});
 
 /* ---------- route ---------- */
-let route=[],visible=[],undone=[],skippedList=[],sorting=false;
+let route=[],visible=[],undone=[],skippedList=[],sorting=false,sortable=null;
 function compute(){
   const r=parseFloat(store.radius);
   const T=today();
@@ -529,8 +535,8 @@ function renderRoute(){
     if(sorting){
       el.className="item compact";
       el.innerHTML=`<div class="num" style="background:${c.color}">${i+1}</div><div><div class="nm">${esc(p.name)}${tags}</div><div class="meta">${c.label}</div></div>
-        <div class="mv"><button class="up" ${i===0?"disabled":""}>↑</button><button class="dn" ${i===route.length-1?"disabled":""}>↓</button></div>`;
-      el.querySelector(".up").onclick=()=>move(i,-1);el.querySelector(".dn").onclick=()=>move(i,1);
+        <div class="handle" aria-label="ドラッグして並べ替え">≡</div>`;
+      el.dataset.id=p.id;
       box.appendChild(el);return;
     }
     el.className="item";
@@ -556,6 +562,13 @@ function renderRoute(){
     mi.onchange=e=>{store.memo[p.id]=e.target.value;save();renderRoute();toast("メモを保存しました");};
     box.appendChild(el);
   });
+  if(sortable){sortable.destroy();sortable=null;}
+  $("sortHint").style.display=sorting?"":"none";
+  if(sorting&&window.Sortable){
+    sortable=Sortable.create(box,{handle:".handle",animation:160,ghostClass:"drag-ghost",chosenClass:"drag-chosen",forceFallback:true,fallbackTolerance:3,scroll:true,bubbleScroll:true,
+      onEnd:()=>{const ids=[...box.querySelectorAll(".item")].map(x=>x.dataset.id);
+        if(ids.join()!==route.map(p=>p.id).join()){store.manual=ids;save();render();}}});
+  }
   $("sortBtn").classList.toggle("on",sorting);$("sortBtn").textContent=sorting?"✓ 完了":"↕ 並べ替え";
   $("sortBtn").style.display=route.length>1||sorting?"":"none";
   $("manualNote").classList.toggle("show",!!store.manual);
@@ -597,7 +610,7 @@ function renderDone(){
 }
 
 /* ---------- sort / add ---------- */
-$("sortBtn").onclick=()=>{sorting=!sorting;renderRoute();};
+$("sortBtn").onclick=()=>{sorting=!sorting;renderRoute();if(sorting)setTimeout(()=>$("sortBtn").scrollIntoView({behavior:"smooth",block:"start"}),50);};
 $("autoBtn").onclick=()=>{const prev=store.manual;store.manual=null;save();render();toast("自動の順番に戻しました","取り消し",()=>{store.manual=prev;save();render();});};
 const nCat=$("nCat");Object.entries(CATS).forEach(([k,c])=>{const o=document.createElement("option");o.value=k;o.textContent=c.label;nCat.appendChild(o);});
 let nLoc=null;
